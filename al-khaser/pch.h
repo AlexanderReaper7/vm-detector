@@ -138,6 +138,7 @@
 
 /* Anti-Analysis */
 #include "AntiAnalysis/process.h"
+#include "AntiAnalysis/instrumentation.h"
 
 /* Anti-Disassembly */
 #include "AntiDisassm/AntiDisassm.h"

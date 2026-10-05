@@ -283,6 +283,13 @@ int main(int argc, char* argv[]){
 		exec_check(&registry_disk_enum, TEXT("Checking Enum\\IDE and Enum\\SCSI entries for VM strings "));
 		exec_check(&number_SMBIOS_tables, TEXT("Checking SMBIOS tables  "));
 		exec_check(&firmware_ACPI, TEXT("Checking ACPI table strings "));
+		exec_check(&hypervisor_detail_sysinfo, TEXT("Checking NtQuerySystemInformation SystemHypervisorDetailInformation "));
+		exec_check(&code_integrity_testsigning, TEXT("Checking code integrity for test-signing/debug mode "));
+		exec_check(&tpm2_firmware_absent, TEXT("Checking for absent TPM2 ACPI firmware table "));
+		exec_check(&system_uptime_short, TEXT("Checking for suspiciously short system uptime "));
+		exec_check(&disk_vendor_ioctl, TEXT("Checking physical disk vendor string via IOCTL "));
+		exec_check(&gpu_adapter_name, TEXT("Checking display adapter name for virtual GPU "));
+		exec_check(&sandbox_named_pipes, TEXT("Checking for known sandbox named pipes "));
 	}
 
 	/* VirtualBox Detection */
@@ -408,12 +415,18 @@ int main(int argc, char* argv[]){
 
 		exec_check(&rdtsc_diff_locky, TEXT("Checking RDTSC Locky trick "));
 		exec_check(&rdtsc_diff_vmexit, TEXT("Checking RDTSC which force a VM Exit (cpuid) "));
+		exec_check(&rdtscp_vmexit_min, TEXT("Checking RDTSCP VM Exit minimum latency (cpuid) "));
 	}
 
 	/* Malware analysis tools */
 	if (ENABLE_ANALYSIS_TOOLS_CHECK) {
 		print_category(TEXT("Analysis-tools"));
 		analysis_tools_process();
+		exec_check(&frida_default_port, TEXT("Checking Frida default port 27042/27043 "));
+		exec_check(&frida_thread_names, TEXT("Checking for Frida gum thread names "));
+		exec_check(&frida_loaded_modules, TEXT("Checking for Frida agent module "));
+		exec_check(&dbi_tool_artifacts, TEXT("Checking for Intel Pin / DynamoRIO artifacts "));
+		exec_check(&dbi_ntdll_prologue_tampering, TEXT("Checking ntdll syscall stubs for DBI prologue rewrites "));
 	}
 
 	/* Anti disassembler tricks */

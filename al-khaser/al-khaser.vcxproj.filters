@@ -220,6 +220,9 @@
     <ClInclude Include="AntiAnalysis\process.h">
       <Filter>AntiAnalysis\Header</Filter>
     </ClInclude>
+    <ClInclude Include="AntiAnalysis\instrumentation.h">
+      <Filter>AntiAnalysis\Header</Filter>
+    </ClInclude>
     <ClInclude Include="AntiDump\ErasePEHeaderFromMemory.h">
       <Filter>AntiDump\Header</Filter>
     </ClInclude>
@@ -421,6 +424,9 @@
       <Filter>CodeInjection\Source</Filter>
     </ClCompile>
     <ClCompile Include="AntiAnalysis\process.cpp">
+      <Filter>AntiAnalysis\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AntiAnalysis\instrumentation.cpp">
       <Filter>AntiAnalysis\Source</Filter>
     </ClCompile>
     <ClCompile Include="AntiDump\ErasePEHeaderFromMemory.cpp">
