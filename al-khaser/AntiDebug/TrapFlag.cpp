@@ -22,30 +22,36 @@ static LONG CALLBACK VectoredHandler(
 )
 {
 	SwallowedException = FALSE;
-	
+
 	if (ExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP)
-		return EXCEPTION_CONTINUE_EXECUTION;
-		
+	{
+		// VMProtect-style check: the single-step should land on the instruction
+		// right after the trap flag is set, which here is a NOP (0x90). Verifying
+		// the opcode at the exception address, not just that a single-step fired,
+		// catches a debugger/VM that resumes stepping at the wrong address.
+		BYTE opcode = *static_cast<BYTE*>(ExceptionInfo->ExceptionRecord->ExceptionAddress);
+		if (opcode == 0x90)
+			return EXCEPTION_CONTINUE_EXECUTION;
+	}
+
 	return EXCEPTION_CONTINUE_SEARCH;
 }
 
 
-
+// Optimization is disabled so the compiler keeps the NOPs in release builds;
+// without this the single-step would not land on a 0x90 opcode.
+#pragma optimize("", off)
 BOOL TrapFlag()
 {
 	PVOID Handle = AddVectoredExceptionHandler(1, VectoredHandler);
 	SwallowedException = TRUE;
 
-#ifdef _WIN64
-	UINT64 eflags = __readeflags();
-#else
-	UINT eflags = __readeflags();
-#endif
-
-	//  Set the trap flag
-	eflags |= 0x100;
-	__writeeflags(eflags);
+	//  Set the trap flag, then single-step onto a known NOP opcode
+	__writeeflags(__readeflags() | 0x100);
+	__nop();
+	__nop();
 
 	RemoveVectoredExceptionHandler(Handle);
 	return SwallowedException;
 }
+#pragma optimize("", on)
