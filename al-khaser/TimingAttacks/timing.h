@@ -8,6 +8,7 @@ BOOL timing_WaitForMultipleObjects(UINT delayInMillis);
 BOOL timing_sleep_loop(UINT delayInMillis);
 BOOL rdtsc_diff_locky();
 BOOL rdtsc_diff_vmexit();
+BOOL rdtscp_vmexit_min();
 BOOL timing_IcmpSendEcho(UINT delayInMillis);
 BOOL timing_CreateWaitableTimer(UINT delayInMillis);
 BOOL timing_CreateTimerQueueTimer(UINT delayInMillis);

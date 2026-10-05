@@ -240,6 +240,39 @@ BOOL rdtsc_diff_vmexit()
 
 
 /*
+VM-exit timing, minimum-based. rdtsc_diff_vmexit above averages the CPUID
+round-trip; an average is dragged around by scheduling noise and context
+switches, which is what makes raw timing checks flaky. The minimum over many
+trials is the near-noise-free cost of the instruction itself, so it is a far
+more stable discriminator: a native CPUID round trip is on the order of a few
+hundred cycles, while a CPUID that traps to a hypervisor (VM exit) costs
+thousands. RDTSCP is used instead of RDTSC because it is partially serializing,
+so the second timestamp is not read before CPUID retires. Threshold is set
+conservatively (2500 cycles) above native cost; note it can still trip on a
+bare-metal Windows host whose CPUID is virtualized by VBS/Hyper-V.
+*/
+BOOL rdtscp_vmexit_min()
+{
+	UINT aux = 0;
+	INT cpuInfo[4] = {};
+	ULONGLONG best = (ULONGLONG)-1;
+
+	for (INT i = 0; i < 100; i++)
+	{
+		ULONGLONG tsc1 = __rdtscp(&aux);
+		__cpuid(cpuInfo, 0);
+		ULONGLONG tsc2 = __rdtscp(&aux);
+
+		ULONGLONG delta = tsc2 - tsc1;
+		if (delta < best)
+			best = delta;
+	}
+
+	return (best > 2500) ? TRUE : FALSE;
+}
+
+
+/*
 Another timinig attack using the API IcmpSendEcho which takes a TimeOut
 in milliseconds as a parameter, to wait for IPv4 ICMP packets replies.
 First time observed: http://blog.talosintelligence.com/2017/09/avast-distributes-malware.html
