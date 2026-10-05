@@ -181,6 +181,9 @@
     <ClInclude Include="Shared\Common.h">
       <Filter>Shared\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Shared\stats.h">
+      <Filter>Shared\Header</Filter>
+    </ClInclude>
     <ClInclude Include="Shared\ApiTypeDefs.h">
       <Filter>Shared\Header</Filter>
     </ClInclude>
@@ -397,6 +400,9 @@
       <Filter>Shared\Source</Filter>
     </ClCompile>
     <ClCompile Include="Shared\Common.cpp">
+      <Filter>Shared\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Shared\stats.cpp">
       <Filter>Shared\Source</Filter>
     </ClCompile>
     <ClCompile Include="Shared\log.cpp">

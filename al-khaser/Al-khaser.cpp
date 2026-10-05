@@ -149,10 +149,13 @@ int main(int argc, char* argv[]){
 	/* Resize the console window for better visibility */
 	resize_console_window();
 
+	stats_init();
+
 	/* Display general informations */
 	_tprintf(_T("[al-khaser version 0.82]"));
 
 	print_category(TEXT("Initialisation"));
+	g_current_category = CAT_NONE;
 	API::Init();
 	print_os();
 	API::PrintAvailabilityReport();
@@ -166,6 +169,7 @@ int main(int argc, char* argv[]){
 	/* TLS checks */
 	if (ENABLE_TLS_CHECKS) {
 		print_category(TEXT("TLS Callbacks"));
+		g_current_category = CAT_TLS;
 		exec_check(&TLSCallbackProcess, TEXT("TLS process attach callback "));
 		exec_check(&TLSCallbackThread, TEXT("TLS thread attach callback "));
 	}
@@ -173,6 +177,7 @@ int main(int argc, char* argv[]){
 	/* Debugger Detection */
 	if (ENABLE_DEBUG_CHECKS) {
 		print_category(TEXT("Debugger Detection"));
+		g_current_category = CAT_DEBUG;
 		exec_check(&IsDebuggerPresentAPI, TEXT("Checking IsDebuggerPresent API "));
 		exec_check(&IsDebuggerPresentPEB, TEXT("Checking PEB.BeingDebugged "));
 		exec_check(&CheckRemoteDebuggerPresentAPI, TEXT("Checking CheckRemoteDebuggerPresent API "));
@@ -216,6 +221,7 @@ int main(int argc, char* argv[]){
 
 	if (ENABLE_INJECTION_CHECKS) {
 		print_category(TEXT("DLL Injection Detection"));
+		g_current_category = CAT_INJECTION;
 		exec_check(&ScanForModules_EnumProcessModulesEx_32bit, TEXT("Enumerating modules with EnumProcessModulesEx [32-bit] "));
 		exec_check(&ScanForModules_EnumProcessModulesEx_64bit, TEXT("Enumerating modules with EnumProcessModulesEx [64-bit] "));
 		exec_check(&ScanForModules_EnumProcessModulesEx_All, TEXT("Enumerating modules with EnumProcessModulesEx [ALL] "));
@@ -230,6 +236,7 @@ int main(int argc, char* argv[]){
 	/* Generic sandbox detection */
 	if (ENABLE_GEN_SANDBOX_CHECKS) {
 		print_category(TEXT("Generic Sandboxe/VM Detection"));
+		g_current_category = CAT_GEN_SANDBOX;
 		loaded_dlls();
 		known_file_names();
 		known_usernames();
@@ -296,6 +303,7 @@ int main(int argc, char* argv[]){
 	/* VirtualBox Detection */
 	if (ENABLE_VBOX_CHECKS) {
 		print_category(TEXT("VirtualBox Detection"));
+		g_current_category = CAT_VBOX;
 		vbox_reg_key_value();
 		exec_check(&vbox_dir, TEXT("Checking VirtualBox Guest Additions directory "));
 		vbox_files();
@@ -320,6 +328,7 @@ int main(int argc, char* argv[]){
 	/* VMWare Detection */
 	if (ENABLE_VMWARE_CHECKS) {
 		print_category(TEXT("VMWare Detection"));
+		g_current_category = CAT_VMWARE;
 		vmware_reg_key_value();
 		vmware_reg_keys();
 		vmware_files();
@@ -334,6 +343,7 @@ int main(int argc, char* argv[]){
 	/* Virtual PC Detection */
 	if (ENABLE_VPC_CHECKS) {
 		print_category(TEXT("Virtual PC Detection"));
+		g_current_category = CAT_VPC;
 		virtual_pc_process();
 		virtual_pc_reg_keys();
 	}
@@ -341,6 +351,7 @@ int main(int argc, char* argv[]){
 	/* QEMU Detection */
 	if (ENABLE_QEMU_CHECKS) {
 		print_category(TEXT("QEMU Detection"));
+		g_current_category = CAT_QEMU;
 		qemu_reg_key_value();
 		qemu_reg_keys();
 		qemu_processes();
@@ -353,6 +364,7 @@ int main(int argc, char* argv[]){
 	/* Xen Detection */
 	if (ENABLE_XEN_CHECKS) {
 		print_category(TEXT("Xen Detection"));
+		g_current_category = CAT_XEN;
 		xen_reg_keys();
 		xen_process();
 		exec_check(&xen_check_mac, TEXT("Checking Mac Address start with 08:16:3E "));
@@ -361,6 +373,7 @@ int main(int argc, char* argv[]){
 	/* KVM Detection */
 	if (ENABLE_KVM_CHECKS) {
 		print_category(TEXT("KVM Detection"));
+		g_current_category = CAT_KVM;
 		kvm_files();
 		kvm_reg_keys();
 		exec_check(&kvm_dir, TEXT("Checking KVM virio directory "));
@@ -369,6 +382,7 @@ int main(int argc, char* argv[]){
 	/* Wine Detection */
 	if (ENABLE_WINE_CHECKS) {
 		print_category(TEXT("Wine Detection"));
+		g_current_category = CAT_WINE;
 		exec_check(&wine_exports, TEXT("Checking Wine via dll exports "));
 		wine_reg_keys();
 	}
@@ -376,6 +390,7 @@ int main(int argc, char* argv[]){
 	/* Parallels Detection */
 	if (ENABLE_PARALLELS_CHECKS) {
 		print_category(TEXT("Parallels Detection"));
+		g_current_category = CAT_PARALLELS;
 		parallels_reg_keys();
 		parallels_process();
 		exec_check(&parallels_check_mac, TEXT("Checking Mac Address start with 00:1C:42 "));
@@ -383,12 +398,14 @@ int main(int argc, char* argv[]){
 
 	if (ENABLE_HYPERV_CHECKS) {
 		print_category(TEXT("Hyper-V Detection"));
+		g_current_category = CAT_HYPERV;
 		exec_check(&check_hyperv_driver_objects, TEXT("Checking for Hyper-V driver objects "));
 		exec_check(&check_hyperv_global_objects, TEXT("Checking for Hyper-V global objects "));
 	}
 
 	/* Code injections techniques */
 	if (ENABLE_CODE_INJECTIONS) {
+		g_current_category = CAT_NONE;
 		CreateRemoteThread_Injection();
 		SetWindowsHooksEx_Injection();
 		NtCreateThreadEx_Injection();
@@ -400,6 +417,7 @@ int main(int argc, char* argv[]){
 	/* Timing Attacks */
 	if (ENABLE_TIMING_ATTACKS) {
 		print_category(TEXT("Timing-attacks"));
+		g_current_category = CAT_TIMING_ATTACKS;
 
 		UINT delayInMillis = delayInSeconds * 1000U;
 		printf("\n[*] Delay value is set to %u seconds (%u minutes) ...\n", delayInSeconds, delayInSeconds / 60);
@@ -422,6 +440,7 @@ int main(int argc, char* argv[]){
 	/* Malware analysis tools */
 	if (ENABLE_ANALYSIS_TOOLS_CHECK) {
 		print_category(TEXT("Analysis-tools"));
+		g_current_category = CAT_ANALYSIS_TOOLS;
 		analysis_tools_process();
 		exec_check(&frida_default_port, TEXT("Checking Frida default port 27042/27043 "));
 		exec_check(&frida_thread_names, TEXT("Checking for Frida gum thread names "));
@@ -432,6 +451,7 @@ int main(int argc, char* argv[]){
 
 	/* Anti disassembler tricks */
 	if (ENABLE_ANTI_DISASSM_CHECKS) {
+		g_current_category = CAT_NONE;
 		_tprintf(_T("Begin AntiDisassmConstantCondition\n"));
 		AntiDisassmConstantCondition();
 		_tprintf(_T("Begin AntiDisassmAsmJmpSameTarget\n"));
@@ -451,9 +471,12 @@ int main(int argc, char* argv[]){
 	/* Anti Dumping */
 	if (ENABLE_DUMPING_CHECK) {
 		print_category(TEXT("Anti Dumping"));
+		g_current_category = CAT_NONE;
 		ErasePEHeaderFromMemory();
 		SizeOfImage();
 	}
+
+	stats_print();
 
 	_tprintf(_T("\n\nAnalysis done, I hope you didn't get red flags :)"));
 

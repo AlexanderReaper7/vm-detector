@@ -235,6 +235,7 @@
     <ClInclude Include="Shared\APIs.h" />
     <ClInclude Include="Shared\ApiTypeDefs.h" />
     <ClInclude Include="Shared\Common.h" />
+    <ClInclude Include="Shared\stats.h" />
     <ClInclude Include="Shared\log.h" />
     <ClInclude Include="Shared\pch.h" />
     <ClInclude Include="Shared\Utils.h" />
@@ -313,6 +314,7 @@
     <ClCompile Include="Shared\APIs.cpp" />
     <ClCompile Include="Shared\ApiTypeDefs.cpp" />
     <ClCompile Include="Shared\Common.cpp" />
+    <ClCompile Include="Shared\stats.cpp" />
     <ClCompile Include="Shared\log.cpp" />
     <ClCompile Include="Shared\Utils.cpp" />
     <ClCompile Include="TimingAttacks\timing.cpp" />

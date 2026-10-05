@@ -61,6 +61,7 @@
 #pragma comment(lib, "powrprof.lib")
 #pragma comment(lib, "Slwga.lib")
 
+#include "Shared/stats.h"
 #include "Shared/Common.h"
 #include "Shared/VersionHelpers.h"
 #include "Shared/log.h"

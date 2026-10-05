@@ -63,6 +63,9 @@ VOID _print_check_text(const TCHAR* szMsg)
 
 VOID _print_check_result(int result, const TCHAR* szMsg)
 {
+	/* Tally into the category currently being executed (CAT_NONE is ignored). */
+	stats_record(g_current_category, result);
+
 	if (result == TRUE)
 		print_detected();
 	else
