@@ -49,11 +49,10 @@ BOOL check_hyperv_global_objects()
 	}
 	for (wchar_t* globalObj : *globalObjs)
 	{
+		// VMBus, the VM Generation Counter and the VM GID object are created by
+		// the Hyper-V stack / a hypervisor-provided vmgenid device, so they are
+		// genuine virtualization tells.
 		if (StrStrW(globalObj, L"VMBUS#") != NULL)
-		{
-			return TRUE;
-		}
-		if (StrCmpCW(globalObj, L"VDRVROOT") == 0)
 		{
 			return TRUE;
 		}
@@ -65,6 +64,12 @@ BOOL check_hyperv_global_objects()
 		{
 			return TRUE;
 		}
+		// VDRVROOT is deliberately NOT matched. It is the control device of
+		// vdrvroot.sys, the "Virtual Drive Root Enumerator", a Microsoft inbox,
+		// Microsoft-signed driver for VHD/virtual-disk support that ships in the
+		// stock Windows image and is present (and loaded) on bare-metal Windows
+		// too. It is not Hyper-V-specific, so matching it reported a VM on
+		// physical machines. See al-khaser issue on the Hyper-V false positives.
 	}
 	return FALSE;
 }

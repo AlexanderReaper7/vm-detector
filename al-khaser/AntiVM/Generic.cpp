@@ -2093,12 +2093,37 @@ BOOL number_SMBIOS_tables()
 }
 
 /*
-Check for generic
+Generic ACPI emulation tell: the WAET table.
+
+WAET, the "Windows ACPI Emulated Devices Table", is emitted by a hypervisor to
+tell Windows that the RTC and/or the ACPI PM timer are emulated, so Windows can
+skip the hardware read-back workarounds those devices need on real silicon
+(https://download.microsoft.com/download/7/E/7/7E7662CF-CBEA-470B-A97E-CE7CE0D98DC2/WAET.docx).
+A physical machine has no emulated devices to describe and does not ship WAET,
+so its presence in the enumerated ACPI tables is a reliable emulation tell.
+Hyper-V, QEMU/KVM, VMware and VirtualBox all emit it.
+
+This replaces an earlier scan that also tripped on two conditions that are *not*
+VM-specific and fired on bare-metal Windows too:
+
+  1. A requiredDevices loop that demanded the ASCII strings PNP0000, PNP0C0C,
+     PNP0C0E, PNP0C14 and PNP0D80 in *every* enumerated table, bailing to
+     "detected" on the first table lacking any one. Those are ASL device HIDs:
+     they live in the DSDT, encoded as compressed 4-byte EISAIDs, not as ASCII
+     in the fixed-layout tables (MCFG, APIC, HPET, FADT, ...). No such table
+     carries them as text, so the loop tripped on the first enumerated table
+     (MCFG here) on any machine, physical or virtual. It also cannot
+     distinguish a modern QEMU guest, whose DSDT does declare these devices,
+     from bare metal.
+  2. Flagging the absence of WSMT (`!foundWSMT`). WSMT is optional firmware and
+     many real machines ship without it, so absence is a false positive.
+
+QEMU's own ACPI tells (FADT preferred_pm_profile, OEM/creator IDs) are the job
+of qemu_firmware_ACPI; this check stays generic.
 */
 BOOL firmware_ACPI()
 {
 	BOOL result = FALSE;
-	BOOL foundWSMT = FALSE;
 	PDWORD tableNames = static_cast<PDWORD>(malloc(4096));
 
 	if (tableNames) {
@@ -2107,91 +2132,21 @@ BOOL firmware_ACPI()
 			static_cast<DWORD>('ACPI'), tableNames, 4096);
 
 		// API not available
-		if (tableSize == -1)
-			return FALSE;
-
-		DWORD tableCount = tableSize / 4;
-		if (tableSize < 4 || tableCount == 0) {
-			result = TRUE;
-		} else {
-			// Windows ACPI Emulated devices Table (WAET)
-			// https://download.microsoft.com/download/7/E/7/7E7662CF-CBEA-470B-A97E-CE7CE0D98DC2/WAET.docx
-			PBYTE waetString = (PBYTE) "WAET";
-			size_t waetStringLen = 4;
-
-			PBYTE batteryDevice = (PBYTE) "PNP0C0A"; // Control Method Battery
-			size_t batteryDeviceLen = 7;
-			BOOL needsBatteryCheck = false;
-
-			const char *requiredDevices[] = {
-				"PNP0000", // 8259-compatible Programmable Interrupt Controller
-				"PNP0C0C", // Power Button Device
-				"PNP0C0E", // Sleep Button Device
-				"PNP0C14", // Windows Management Instrumentation Device
-				"PNP0D80", // Windows-compatible System Power Management
-						   // Controller
-			};
-
-		restart:
+		if (tableSize != (DWORD)-1) {
+			DWORD tableCount = tableSize / 4;
 			for (DWORD i = 0; i < tableCount; i++) {
-				DWORD tableSize = 0;
-				PBYTE table = get_system_firmware(static_cast<DWORD>('ACPI'),
-												  tableNames[i], &tableSize);
-
-				if (table) {
-
-					if (tableNames[i] == static_cast<DWORD>('TMSW')) {
-						foundWSMT = TRUE;
-					}
-
-					// Format: [HexOffset DecimalOffset ByteLength]  FieldName
-					// : FieldValue (in hex)
-					//		   [02Dh      0045          001h      ]	 PM Profile
-					//: 0 [Unspecified] or 1 [Desktop] or 2 [Mobile]
-					if (!needsBatteryCheck &&
-						tableNames[i] == static_cast<DWORD>('PCAF') &&
-						tableSize > 45) {
-						if ((BYTE)table[45] == (BYTE)0 /* Mobile == 2 */) {
-							needsBatteryCheck = true;
-							free(table);
-							goto restart;
-						}
-					}
-
-					if (find_str_in_data(waetString, waetStringLen, table,
-										 tableSize)) {
-						free(table);
-						result = TRUE;
-						goto out;
-					}
-
-					if (needsBatteryCheck &&
-						!find_str_in_data(waetString, waetStringLen, table,
-										  tableSize)) {
-						free(table);
-						result = TRUE;
-						goto out;
-					}
-
-					for (DWORD j = 0;
-						 j < sizeof(requiredDevices) / sizeof(char *); j++) {
-						if (!find_str_in_data((PBYTE)requiredDevices[j],
-											  strlen(requiredDevices[j]), table,
-											  tableSize)) {
-							free(table);
-							result = TRUE;
-							goto out;
-						}
-					}
-
-					free(table);
+				// Signatures are packed little-endian in the enumeration, so
+				// the 'WAET' table reads as 'TEAW' as a DWORD (cf. the existing
+				// 'PCAF'/'TMSW' comparisons for FADT/WSMT).
+				if (tableNames[i] == static_cast<DWORD>('TEAW')) {
+					result = TRUE;
+					break;
 				}
 			}
 		}
-	out:
 		free(tableNames);
 	}
-	return result || !foundWSMT;
+	return result;
 }
 
 /*
