@@ -1016,6 +1016,13 @@ BOOL cpuid_hypervisor_vendor()
 		_T("XenVMMXenVMM"),	   /* Xen */
 		_T("prl hyperv  "),	   /* Parallels */
 		_T("VBoxVBoxVBox"),	   /* VirtualBox */
+		_T("bhyve bhyve "),	   /* FreeBSD bhyve */
+		_T("ACRNACRNACRN"),	   /* ACRN */
+		_T("TCGTCGTCGTCG"),	   /* QEMU full software emulation (TCG) */
+		_T("QNXQVMBSQG  "),	   /* QNX hypervisor */
+		_T("Jailhouse\0\0\0"), /* Jailhouse partitioning hypervisor */
+		_T("OpenBSDVMM58"),	   /* OpenBSD vmm */
+		_T("Linux KVM Hv"),	   /* Hyper-V enlightenment presented by KVM */
 	};
 	WORD dwlength =
 		sizeof(szBlacklistedHypervisors) / sizeof(szBlacklistedHypervisors[0]);
@@ -2254,4 +2261,259 @@ VOID looking_glass_vdd_processes()
 		else
 			print_results(FALSE, msg);
 	}
+}
+
+
+/*
+Ask the kernel directly whether a hypervisor is present via
+NtQuerySystemInformation(SystemHypervisorDetailInformation). On a host with no
+hypervisor the call fails or returns a zero vendor/max-function word; under any
+hypervisor (including Windows VBS/HVCI, which runs the root partition on top of
+Hyper-V) the first HV_DETAILS word is non-zero. This is a distinct vector from
+the CPUID(0x40000000) check: it goes through the kernel rather than issuing the
+instruction in user mode, so a hypervisor that masks CPUID in the guest but not
+in the kernel view is still caught. Expect this to fire on a bare-metal Win11
+box that has memory integrity / VBS enabled, same as cpuid_is_hypervisor.
+*/
+BOOL hypervisor_detail_sysinfo()
+{
+	const UINT SystemHypervisorDetailInformation = 0x9F;
+
+	typedef struct _HV_DETAILS {
+		ULONG Data[4];
+	} HV_DETAILS;
+
+	typedef struct _SYSTEM_HYPERVISOR_DETAIL_INFORMATION {
+		HV_DETAILS HvVendorAndMaxFunction;
+		HV_DETAILS HypervisorInterface;
+		HV_DETAILS HypervisorVersion;
+		HV_DETAILS HvFeatures;
+		HV_DETAILS HwFeatures;
+		HV_DETAILS EnlightenmentInfo;
+		HV_DETAILS ImplementationLimits;
+	} SYSTEM_HYPERVISOR_DETAIL_INFORMATION;
+
+	auto NtQuerySystemInformation = static_cast<pNtQuerySystemInformation>(
+		API::GetAPI(API_IDENTIFIER::API_NtQuerySystemInformation));
+	if (NtQuerySystemInformation == NULL)
+		return FALSE;
+
+	SYSTEM_HYPERVISOR_DETAIL_INFORMATION info;
+	memset(&info, 0, sizeof(info));
+
+	NTSTATUS status = NtQuerySystemInformation(
+		SystemHypervisorDetailInformation, &info, sizeof(info), NULL);
+	if (status < 0)
+		return FALSE;
+
+	/* EAX from CPUID(0x40000000) as seen by the kernel: max hypervisor leaf. */
+	if (info.HvVendorAndMaxFunction.Data[0] != 0)
+		return TRUE;
+
+	return FALSE;
+}
+
+
+/*
+NtQuerySystemInformation(SystemCodeIntegrityInformation) exposes the kernel's
+code-integrity options. Test-signing and kernel-debug code-integrity modes are
+normal on an analyst's machine that loads unsigned monitoring drivers, and off
+on an ordinary end-user box, so either bit set is a weak analysis-environment
+tell. This does not fire merely because HVCI is on.
+*/
+BOOL code_integrity_testsigning()
+{
+	const UINT SystemCodeIntegrityInformation = 0x67;
+	/* CODEINTEGRITY_OPTION_* come from winternl.h. */
+
+	typedef struct _AK_SYSTEM_CODEINTEGRITY_INFORMATION {
+		ULONG Length;
+		ULONG CodeIntegrityOptions;
+	} SYSTEM_CODEINTEGRITY_INFORMATION;
+
+	auto NtQuerySystemInformation = static_cast<pNtQuerySystemInformation>(
+		API::GetAPI(API_IDENTIFIER::API_NtQuerySystemInformation));
+	if (NtQuerySystemInformation == NULL)
+		return FALSE;
+
+	SYSTEM_CODEINTEGRITY_INFORMATION info;
+	memset(&info, 0, sizeof(info));
+	info.Length = sizeof(info);
+
+	NTSTATUS status = NtQuerySystemInformation(
+		SystemCodeIntegrityInformation, &info, sizeof(info), NULL);
+	if (status < 0)
+		return FALSE;
+
+	if (info.CodeIntegrityOptions &
+		(CODEINTEGRITY_OPTION_TESTSIGN | CODEINTEGRITY_OPTION_DEBUGMODE_ENABLED))
+		return TRUE;
+
+	return FALSE;
+}
+
+
+/*
+A physical TPM 2.0 publishes an ACPI table named "TPM2". GetSystemFirmwareTable
+reads the raw ACPI table set without any TPM API or tbs.lib. Modern bare-metal
+machines (and Win11 in particular) ship fTPM/dTPM and therefore this table;
+stripped sandbox images frequently omit the virtual TPM. Returns TRUE when the
+TPM2 table is absent, i.e. the environment looks like a TPM-less image. Flagged
+as a heuristic: a bare-metal box with TPM disabled in firmware also trips it.
+*/
+BOOL tpm2_firmware_absent()
+{
+	const DWORD ACPI = 'ACPI';
+
+	/* ACPI signatures are 4 ASCII chars in memory order "TPM2"; the DWORD id
+	   passed to GetSystemFirmwareTable is that string read little-endian. */
+	const DWORD tableID = '2MPT';
+
+	DWORD size = GetSystemFirmwareTable(ACPI, tableID, NULL, 0);
+	if (size == 0)
+		return TRUE; /* no TPM2 ACPI table -> looks TPM-less */
+
+	return FALSE;
+}
+
+
+/*
+Freshly provisioned sandbox VMs run the sample seconds to a couple of minutes
+after boot. GetTickCount64 reports milliseconds since boot. A very small uptime
+is a heuristic sandbox tell. Threshold is deliberately low (3 minutes) to keep
+false positives off a real machine that is simply running something soon after
+a reboot; raise it for a more aggressive stance.
+*/
+BOOL system_uptime_short()
+{
+	const ULONGLONG THRESHOLD_MS = 3ULL * 60ULL * 1000ULL;
+	return GetTickCount64() < THRESHOLD_MS ? TRUE : FALSE;
+}
+
+
+/*
+Query the first physical disk's vendor/product identity with
+IOCTL_STORAGE_QUERY_PROPERTY. Hypervisor-backed virtual disks report telltale
+identity strings ("QEMU", "VBOX", "VMware", "Virtual", "Msft" for the Hyper-V
+synthetic disk, "NECVMWar" for the VMware IDE bridge, "Google"/"Amazon" for the
+major cloud sandboxes). This is distinct from the existing disk-size checks: it
+reads the model string, not the capacity.
+*/
+BOOL disk_vendor_ioctl()
+{
+	HANDLE hDevice = CreateFile(_T("\\\\.\\PhysicalDrive0"), 0,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+	if (hDevice == INVALID_HANDLE_VALUE)
+		return FALSE;
+
+	STORAGE_PROPERTY_QUERY query;
+	memset(&query, 0, sizeof(query));
+	query.PropertyId = StorageDeviceProperty;
+	query.QueryType = PropertyStandardQuery;
+
+	BYTE buffer[1024];
+	memset(buffer, 0, sizeof(buffer));
+	DWORD bytesReturned = 0;
+
+	BOOL ok = DeviceIoControl(hDevice, IOCTL_STORAGE_QUERY_PROPERTY,
+		&query, sizeof(query), &buffer, sizeof(buffer), &bytesReturned, NULL);
+	CloseHandle(hDevice);
+	if (!ok)
+		return FALSE;
+
+	STORAGE_DEVICE_DESCRIPTOR* desc = (STORAGE_DEVICE_DESCRIPTOR*)buffer;
+
+	/* Collect vendor and product id (plain ASCII at byte offsets in buffer). */
+	char identity[512];
+	identity[0] = '\0';
+	if (desc->VendorIdOffset != 0 && desc->VendorIdOffset < sizeof(buffer))
+		strncat_s(identity, sizeof(identity), (const char*)(buffer + desc->VendorIdOffset), _TRUNCATE);
+	if (desc->ProductIdOffset != 0 && desc->ProductIdOffset < sizeof(buffer))
+		strncat_s(identity, sizeof(identity), (const char*)(buffer + desc->ProductIdOffset), _TRUNCATE);
+
+	/* Upper-case for a case-insensitive contains test. */
+	for (char* p = identity; *p; ++p)
+		*p = (char)toupper((unsigned char)*p);
+
+	const char* szBad[] = {
+		"QEMU", "VBOX", "VIRTUALBOX", "VMWARE", "VMWAR", "VIRTUAL",
+		"MSFT", "NECVMWAR", "XEN", "RED HAT", "VIRTIO", "INNOTEK",
+		"PARALLELS", "GOOGLE", "AMAZON", "NVME VIRTUAL",
+	};
+	for (int i = 0; i < _countof(szBad); i++) {
+		if (strstr(identity, szBad[i]) != NULL)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+
+/*
+Enumerate display adapters with EnumDisplayDevices and match the adapter
+description against virtual GPU strings. No DXGI/COM dependency. "Microsoft
+Basic Render Driver" is the headless adapter many sandboxes fall back to; the
+rest are the per-vendor virtual display adapters.
+*/
+BOOL gpu_adapter_name()
+{
+	const TCHAR* szBad[] = {
+		_T("VMware"), _T("VirtualBox"), _T("VBox"),
+		_T("Microsoft Basic Render"), _T("Microsoft Hyper-V"),
+		_T("QEMU"), _T("Red Hat"), _T("VirtIO"), _T("Parallels"),
+		_T("Standard VGA"), _T("Cirrus"),
+	};
+
+	DISPLAY_DEVICE dd;
+	memset(&dd, 0, sizeof(dd));
+	dd.cb = sizeof(dd);
+
+	for (DWORD i = 0; EnumDisplayDevices(NULL, i, &dd, 0); i++) {
+		for (int j = 0; j < _countof(szBad); j++) {
+			if (_tcsstr(dd.DeviceString, szBad[j]) != NULL)
+				return TRUE;
+		}
+		memset(&dd, 0, sizeof(dd));
+		dd.cb = sizeof(dd);
+	}
+
+	return FALSE;
+}
+
+
+/*
+Several automated sandboxes expose a control/agent named pipe. Enumerate the
+named-pipe object directory (\\.\pipe\) and substring-match known markers:
+Cuckoo and its CAPE fork, and Sandboxie's service pipe. Matching the pipe set
+rather than a single hard-coded name survives per-analysis pipe suffixes.
+*/
+BOOL sandbox_named_pipes()
+{
+	const TCHAR* szBad[] = {
+		_T("cuckoo"), _T("cape"), _T("sbiesvc"), _T("sandboxie"),
+	};
+
+	WIN32_FIND_DATA fd;
+	memset(&fd, 0, sizeof(fd));
+	HANDLE hFind = FindFirstFile(_T("\\\\.\\pipe\\*"), &fd);
+	if (hFind == INVALID_HANDLE_VALUE)
+		return FALSE;
+
+	BOOL found = FALSE;
+	do {
+		TCHAR lower[MAX_PATH];
+		_tcsncpy_s(lower, MAX_PATH, fd.cFileName, _TRUNCATE);
+		for (TCHAR* p = lower; *p; ++p)
+			*p = (TCHAR)_totlower(*p);
+
+		for (int j = 0; j < _countof(szBad); j++) {
+			if (_tcsstr(lower, szBad[j]) != NULL) {
+				found = TRUE;
+				break;
+			}
+		}
+	} while (!found && FindNextFile(hFind, &fd));
+
+	FindClose(hFind);
+	return found;
 }
