@@ -1047,6 +1047,52 @@ BOOL cpuid_hypervisor_vendor()
 }
 
 /*
+On AMD, CPUID leaf 0x8000001D (Cache Topology, requires the TopoExt feature)
+reports in EAX[25:14] the number of logical processors sharing each cache, minus
+one. A cache cannot be shared by more processors than physically exist, so if any
+subleaf reports a sharing count greater than the number of logical processors on
+the system, a hypervisor has rounded the cache-sharing APIC-ID mask up past the
+guest's vCPU count. Observed on QEMU/KVM: an L3 reporting 16 sharers on a 12-vCPU
+guest, where the bare-metal host reports the exact 12. See Sutherland, "Detecting
+virtualisation platforms using the CPUID instruction" (2024), section 5.36.
+*/
+BOOL cpuid_amd_cache_sharing_exceeds_cpus()
+{
+	INT CPUInfo[4] = { 0 };
+	CHAR szVendor[13] = { 0 };
+
+	/* Leaf 0x8000001D is AMD-specific (Intel uses leaf 4), so bail on non-AMD. */
+	__cpuid(CPUInfo, 0);
+	memcpy(szVendor + 0, &CPUInfo[1], 4); /* ebx */
+	memcpy(szVendor + 4, &CPUInfo[3], 4); /* edx */
+	memcpy(szVendor + 8, &CPUInfo[2], 4); /* ecx */
+	if (strcmp(szVendor, "AuthenticAMD") != 0)
+		return FALSE;
+
+	/* The extended cache-topology leaf must be in range. */
+	__cpuid(CPUInfo, 0x80000000);
+	if ((UINT)CPUInfo[0] < 0x8000001D)
+		return FALSE;
+
+	DWORD cpus = GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
+	if (cpus == 0)
+		return FALSE;
+
+	/* Walk cache subleaves until the cache type field (EAX[4:0]) is 0 (null). */
+	for (DWORD sub = 0; sub < 16; sub++) {
+		__cpuidex(CPUInfo, 0x8000001D, sub);
+		UINT cacheType = CPUInfo[0] & 0x1F;
+		if (cacheType == 0)
+			break;
+		UINT sharing = ((CPUInfo[0] >> 14) & 0xFFF) + 1;
+		if (sharing > cpus)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+/*
 Check SerialNumber devices using WMI
 */
 BOOL serial_number_bios_wmi()
