@@ -61,3 +61,4 @@ BOOL system_uptime_short();
 BOOL disk_vendor_ioctl();
 BOOL gpu_adapter_name();
 BOOL sandbox_named_pipes();
+BOOL ata_identify();

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <ntddscsi.h>
 
 #include "Generic.h"
 
@@ -2516,4 +2517,90 @@ BOOL sandbox_named_pipes()
 
 	FindClose(hFind);
 	return found;
+}
+
+
+/*
+ATA IDENTIFY DEVICE (command 0xEC) via IOCTL_ATA_PASS_THROUGH. This reaches the
+ATA command set directly rather than the storage-stack property query that
+disk_vendor_ioctl uses, so it exposes the drive's own model, serial, and
+firmware strings. Virtual disks fill these with telltale values ("QEMU
+HARDDISK", "VBOX HARDDISK", "VMware Virtual", "Virtual HD", "QM00001"). Each
+16-bit ATA word stores two ASCII chars big-endian, so the byte pairs are
+swapped before matching. Needs elevation (raw PhysicalDrive access), so it
+bails quietly when not elevated.
+
+Finishes the stale ata-identify branch: that version issued the command and
+dumped every field to the debugger but always returned FALSE, i.e. it never
+actually decided anything. This compares the identity strings and reports.
+*/
+BOOL ata_identify()
+{
+	if (!IsElevated())
+		return FALSE;
+
+	HANDLE hDevice = CreateFile(_T("\\\\.\\PhysicalDrive0"),
+		GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+		NULL, OPEN_EXISTING, 0, NULL);
+	if (hDevice == INVALID_HANDLE_VALUE)
+		return FALSE;
+
+	/* ATA_PASS_THROUGH_EX immediately followed by the 512-byte IDENTIFY data. */
+	struct {
+		ATA_PASS_THROUGH_EX apt;
+		UCHAR data[512];
+	} req;
+	memset(&req, 0, sizeof(req));
+
+	req.apt.Length = sizeof(ATA_PASS_THROUGH_EX);
+	req.apt.AtaFlags = ATA_FLAGS_DATA_IN;
+	req.apt.DataTransferLength = sizeof(req.data);
+	req.apt.TimeOutValue = 10;
+	req.apt.DataBufferOffset = offsetof(decltype(req), data);
+	req.apt.CurrentTaskFile[6] = 0xEC; /* IDENTIFY DEVICE command register */
+
+	DWORD bytesReturned = 0;
+	BOOL ok = DeviceIoControl(hDevice, IOCTL_ATA_PASS_THROUGH,
+		&req, sizeof(req), &req, sizeof(req), &bytesReturned, NULL);
+	CloseHandle(hDevice);
+	if (!ok)
+		return FALSE;
+
+	/* Pull the ATA string fields out of the raw buffer at their word offsets
+	   (serial: words 10-19, firmware: 23-26, model: 27-46) and byte-swap. */
+	auto extract = [&](int wordStart, int byteLen, char* out) {
+		int base = wordStart * 2;
+		for (int i = 0; i < byteLen; i += 2) {
+			out[i] = (char)req.data[base + i + 1];
+			out[i + 1] = (char)req.data[base + i];
+		}
+		out[byteLen] = '\0';
+	};
+
+	char serial[21], firmware[9], model[41];
+	extract(10, 20, serial);
+	extract(23, 8, firmware);
+	extract(27, 40, model);
+
+	char identity[128];
+	identity[0] = '\0';
+	strncat_s(identity, sizeof(identity), model, _TRUNCATE);
+	strncat_s(identity, sizeof(identity), " ", _TRUNCATE);
+	strncat_s(identity, sizeof(identity), serial, _TRUNCATE);
+	strncat_s(identity, sizeof(identity), " ", _TRUNCATE);
+	strncat_s(identity, sizeof(identity), firmware, _TRUNCATE);
+	for (char* p = identity; *p; ++p)
+		*p = (char)toupper((unsigned char)*p);
+
+	const char* szBad[] = {
+		"QEMU", "VBOX", "VIRTUALBOX", "VMWARE", "VMWAR", "VIRTUAL",
+		"QM00001", "MSFT", "XEN", "RED HAT", "VIRTIO", "INNOTEK",
+		"PARALLELS", "GOOGLE", "AMAZON",
+	};
+	for (int i = 0; i < _countof(szBad); i++) {
+		if (strstr(identity, szBad[i]) != NULL)
+			return TRUE;
+	}
+
+	return FALSE;
 }

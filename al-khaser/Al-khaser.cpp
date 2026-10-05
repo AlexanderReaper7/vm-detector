@@ -288,6 +288,7 @@ int main(int argc, char* argv[]){
 		exec_check(&tpm2_firmware_absent, TEXT("Checking for absent TPM2 ACPI firmware table "));
 		exec_check(&system_uptime_short, TEXT("Checking for suspiciously short system uptime "));
 		exec_check(&disk_vendor_ioctl, TEXT("Checking physical disk vendor string via IOCTL "));
+		exec_check(&ata_identify, TEXT("Checking disk model/serial via ATA IDENTIFY DEVICE "));
 		exec_check(&gpu_adapter_name, TEXT("Checking display adapter name for virtual GPU "));
 		exec_check(&sandbox_named_pipes, TEXT("Checking for known sandbox named pipes "));
 	}
