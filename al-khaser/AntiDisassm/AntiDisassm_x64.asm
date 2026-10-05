@@ -3,19 +3,19 @@
 
 __AsmConstantCondition proc
     xor rax, rax
-	jz L_END
+	jz L_END_CC
 	db 0e8h
-L_END:
+L_END_CC:
 	nop
     ret
 __AsmConstantCondition endp
 
 
 __AsmJmpSameTarget proc
-	jz L_END
-	jnz L_END
+	jz L_END_JST
+	jnz L_END_JST
 	db 0e8h
-L_END:
+L_END_JST:
 	nop
 	ret
 __AsmJmpSameTarget endp
@@ -60,7 +60,8 @@ __AsmFunctionPointer endp
 
 
 __AsmReturnPointerAbuse proc
-	call $+5
+	call L_RPA_next
+L_RPA_next:
 	add qword ptr[rsp], 6
 	ret
 
