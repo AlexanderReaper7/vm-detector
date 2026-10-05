@@ -9,7 +9,7 @@
  * 
  * Debuggers and other analysis applications usually place processes inside a job so that child processes will exit
  * when the parent process exits.
- * You can observe this with Visual Studio by running al-khaser with Debug -> Start Without Debugging.
+ * You can observe this with Visual Studio by running vm-detector with Debug -> Start Without Debugging.
  *
  */
 
@@ -54,7 +54,7 @@ BOOL ProcessJob()
 							{
 								String pnStr(processName);
 
-								// ignore conhost.exe (this hosts the al-khaser executable in a console)
+								// ignore conhost.exe (this hosts the vm-detector executable in a console)
 								if (pnStr.find(String(L"\\Windows\\System32\\conhost.exe")) != std::string::npos)
 								{
 									ok_processes++;

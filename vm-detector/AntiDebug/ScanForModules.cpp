@@ -420,7 +420,7 @@ BOOL ScanForModules_DotNetModuleStructures()
 
 	/*
 	This works because the .NET runtime loads structures into memory that describe modules. This happens even if the module is loaded dynamically, from memory.
-	If al-khaser were a .NET application we'd need to apply some additional checks on the results, but since it isn't then we can just report every .NET module we find.
+	If vm-detector were a .NET application we'd need to apply some additional checks on the results, but since it isn't then we can just report every .NET module we find.
 	This check is quite effective because it catches pretty much any kind of .NET injection, even if the injector uses tricks like messing with PE headers or patching EWT.
 	*/
 

@@ -69,7 +69,7 @@ BOOL check_hyperv_global_objects()
 		// Microsoft-signed driver for VHD/virtual-disk support that ships in the
 		// stock Windows image and is present (and loaded) on bare-metal Windows
 		// too. It is not Hyper-V-specific, so matching it reported a VM on
-		// physical machines. See al-khaser issue on the Hyper-V false positives.
+		// physical machines. See vm-detector issue on the Hyper-V false positives.
 	}
 	return FALSE;
 }

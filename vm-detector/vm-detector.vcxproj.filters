@@ -301,7 +301,7 @@
     <ClInclude Include="AntiDebug\NtSystemDebugControl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="al-khaser.cpp" />
+    <ClCompile Include="vm-detector.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="AntiDebug\CloseHandle_InvalidHandle.cpp">
       <Filter>AntiDebug\Source</Filter>
@@ -506,7 +506,7 @@
     </MASM>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="al-khaser.manifest" />
+    <Manifest Include="vm-detector.manifest" />
     <MASM Include="AntiDisassm\AntiDisassm_x86.asm">
       <Filter>AntiDisassm\Source</Filter>
     </MASM>

@@ -884,7 +884,7 @@ BOOL mouse_movement()
 Check for the lack of user input.
 This version is slightly different from the original:
 https://www.lastline.com/labsblog/malware-evasion-techniques/
-It does not run inside an infinite loop (preventing al-khaser to get stuck)
+It does not run inside an infinite loop (preventing vm-detector to get stuck)
 */
 BOOL lack_user_input()
 {

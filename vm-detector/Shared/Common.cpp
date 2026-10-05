@@ -100,7 +100,7 @@ VOID exec_check(int(*callback)(), const TCHAR* szMsg)
 VOID resize_console_window()
 {
 	// Change the window title:
-	SetConsoleTitle(_T("Al-Khaser - by Lord Noteworthy"));
+	SetConsoleTitle(_T("vm-detector (fork of al-khaser by Lord Noteworthy)"));
 
 	// Get console window handle
 	HWND wh = GetConsoleWindow();

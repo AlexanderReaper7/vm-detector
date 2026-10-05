@@ -39,7 +39,7 @@ This was written specifically for IDENTIFY_DEVICE_DATA in order to speed up writ
 This can probably be used for similar structs too, so it might be useful elsewhere.
 */
 
-const string SourceFile = @"C:\Users\Graham\Source\Repos\al-khaser\Tools\ATAIdentifyDump\IdentifyDeviceData.h";
+const string SourceFile = @"C:\Users\Graham\Source\Repos\vm-detector\Tools\ATAIdentifyDump\IdentifyDeviceData.h";
 const string StructVar = "idd";
 const bool SwapStringEndian = true; // for IDENTIFY_DEVICE_DATA
 

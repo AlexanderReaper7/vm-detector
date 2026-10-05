@@ -1,4 +1,4 @@
-// al-khaser.cpp : This file contains the 'main' function. Program execution begins and ends there.
+// vm-detector.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #include "pch.h"
@@ -22,7 +22,7 @@ BOOL ENABLE_TIMING_ATTACKS = FALSE;
 BOOL ENABLE_DUMPING_CHECK = FALSE;
 BOOL ENABLE_ANALYSIS_TOOLS_CHECK = FALSE;
 BOOL ENABLE_ANTI_DISASSM_CHECKS = FALSE;
-const char* PROGRAM_NAME = "al-khaser.exe";
+const char* PROGRAM_NAME = "vm-detector.exe";
 
 
 void EnableDefaultChecks() {
@@ -152,7 +152,7 @@ int main(int argc, char* argv[]){
 	stats_init();
 
 	/* Display general informations */
-	_tprintf(_T("[al-khaser version 0.82]"));
+	_tprintf(_T("[vm-detector version 0.82]"));
 
 	print_category(TEXT("Initialisation"));
 	g_current_category = CAT_NONE;

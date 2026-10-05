@@ -1,4 +1,6 @@
-## Al-Khaser v0.81
+## vm-detector
+
+> Formerly **al-khaser** by Lord Noteworthy (https://github.com/LordNoteworthy/al-khaser). This is a renamed fork; the links below that point to the original repo are intentional.
 
 ![Logo](https://www.mindmeister.com/files/avatars/0035/8332/original/avatar.jpg)
 
@@ -19,15 +21,15 @@
 
 ## Introduction
 
-al-khaser is a PoC "malware" application with good intentions that aims to stress your anti-malware system.
+vm-detector is a PoC "malware" application with good intentions that aims to stress your anti-malware system.
 It performs a bunch of common malware tricks with the goal of seeing if you stay under the radar.
 
 ![Logo](https://i.imgur.com/jEFhsJT.png)
 
 ### Usage
 ```
-$ ./al-khaser.exe -h
-Usage: al-khaser.exe [OPTIONS]
+$ ./vm-detector.exe -h
+Usage: vm-detector.exe [OPTIONS]
 Options:
   --check <type>      Enable specific check(s). Can be used multiple times. Valid types are:
                         TLS              (Thread Local Storage callback checks)
@@ -53,9 +55,9 @@ Options:
   -h, --help          Show this help message and exit.
 
 Examples:
-  al-khaser.exe --check DEBUG --check TIMING_ATTACKS --sleep 30
-  al-khaser.exe --check VMWARE --check QEMU
-  al-khaser.exe --sleep 30
+  vm-detector.exe --check DEBUG --check TIMING_ATTACKS --sleep 30
+  vm-detector.exe --check VMWARE --check QEMU
+  vm-detector.exe --sleep 30
 ```
 
 ## Download

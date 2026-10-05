@@ -7,7 +7,7 @@ LRESULT CALLBACK MyProc(INT code, WPARAM wParam, LPARAM lParam)
 {
 	//here goes our code
 	TCHAR str[MAX_PATH] = _T("");
-	_stprintf(str, _T("[Al-khaser] - Injected from process: %d"), GetCurrentProcessId());
+	_stprintf(str, _T("[vm-detector] - Injected from process: %d"), GetCurrentProcessId());
 	OutputDebugString(str);
 	return CallNextHookEx(NULL, code, wParam, lParam);  //this is needed to let other applications set other hooks on this target
 }
@@ -18,19 +18,19 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason)
 	{
 		case DLL_PROCESS_ATTACH:
-			OutputDebugString(_T("[Al-khaser] - DLL is attached"));
+			OutputDebugString(_T("[vm-detector] - DLL is attached"));
 			break;
 
 		case DLL_PROCESS_DETACH:
-			OutputDebugString(_T("[Al-khaser] - DLL is detached"));
+			OutputDebugString(_T("[vm-detector] - DLL is detached"));
 			break;
 
 		case DLL_THREAD_ATTACH:
-			OutputDebugString(_T("[Al-khaser] - Thread is atached"));
+			OutputDebugString(_T("[vm-detector] - Thread is atached"));
 			break;
 
 		case DLL_THREAD_DETACH:
-			OutputDebugString(_T("[Al-khaser] - Thread is detached"));
+			OutputDebugString(_T("[vm-detector] - Thread is detached"));
 			break;
 		}
 

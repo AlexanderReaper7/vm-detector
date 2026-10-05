@@ -2,7 +2,7 @@ Sub Document_Close()
 
    On Error Resume Next
 
-   ActiveDocument.Range.Text = "Al-khaser 0.69 by Lord Noteworthy" & vbCrLf & vbCrLf & "Public malware techniques used in the wild: Virtual Machine, Emulation, Debuggers, Sandbox detection." & vbCrLf
+   ActiveDocument.Range.Text = "vm-detector (fork of al-khaser 0.69 by Lord Noteworthy)" & vbCrLf & vbCrLf & "Public malware techniques used in the wild: Virtual Machine, Emulation, Debuggers, Sandbox detection." & vbCrLf
    
    checkFileMRU
 End Sub
