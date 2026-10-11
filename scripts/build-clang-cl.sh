@@ -9,8 +9,12 @@
 #      A shim dir of symlinks at the as-written path fixes both.
 #   2. import-lib case: #pragma comment(lib,"Mpr.lib") vs the on-disk Mpr.Lib.
 #   3. MASM: the .asm files assemble with llvm-ml64. AntiDisassm_x64.asm needed
-#      two source fixes (unique L_END labels per proc; `call $+5` -> a label),
-#      both byte-identical, committed in the tree.
+#      three source fixes, committed in the tree: unique L_END labels per proc and
+#      `call $+5` -> a label (both byte-identical), and `mov rcx, offset func2` ->
+#      `lea rcx, func2`. llvm-ml64 encodes the mov as an imm32 with an ADDR32
+#      relocation (ml64 emits a 64-bit movabs), so above 4 GB the pointer was
+#      truncated and the anti-disassembly section crashed with 0xC0000005,
+#      losing the buffered tail of the run (2026-10-11).
 #
 # Output: $OUT/vm-detector.exe (default /tmp/vm-detector.exe).
 set -euo pipefail
@@ -51,10 +55,17 @@ mapfile -t RAW < <(grep -oE 'ClCompile Include="[^"]*"' vm-detector.vcxproj | se
 SRCS=(); for f in "${RAW[@]}"; do [ "$f" = "pch.cpp" ] && continue
   [ -f "$f" ] && SRCS+=("$f") || SRCS+=("$(find . -ipath "./$f" -type f | head -1 | sed 's#^\./##')"); done
 
+# Embed vm-detector.manifest. Without it VerifyVersionInfo caps the reported OS at
+# 6.2 (Win8), so IsWindows8or8PointOne() is true on Win11 and the version-indexed
+# checks read wrong offsets: the Low Fragmentation Heap anti-debug check then reads
+# a non-LFH _HEAP field as NULL and false-positives on bare-metal Win11 too. The
+# MSBuild project embeds it (vm-detector.vcxproj Manifest Include); lld-link does
+# the same with /manifest:embed /manifestinput (2026-10-11).
 clang-cl /nologo /std:c++17 /EHsc /O2 /MT /DNDEBUG /D_CONSOLE /DWIN32 /DUNICODE /D_UNICODE \
   /Y- /FIpch.h "/I$SHIM" /I. \
   "${SRCS[@]}" "$OBJ/int2d.obj" "$OBJ/antidisassm.obj" \
   "/Fe:$OUT" \
   /link /subsystem:console user32.lib advapi32.lib ole32.lib oleaut32.lib shell32.lib \
+  /manifest:embed "/manifestinput:$(readlink -f vm-detector.manifest)" \
   "/libpath:$LIBSHIM" "/libpath:$SDK/crt/lib/x64" "/libpath:$SDK/sdk/lib/um/x64" "/libpath:$SDK/sdk/lib/ucrt/x64"
 echo "built $OUT"

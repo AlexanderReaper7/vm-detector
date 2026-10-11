@@ -45,7 +45,11 @@ __AsmFunctionPointer proc
 	push rax
 	push rcx
 	push rsi
-	mov rcx, offset func2
+	; RIP-relative, not `mov rcx, offset func2`: llvm-ml64 encodes the mov as a
+	; sign-extended imm32 (ADDR32 reloc) that truncates once the image loads above
+	; 4 GB, so `call rcx` faults. The `[rip]` spelling forces a REL32 reloc; plain
+	; `lea rcx, func2` still assembles to ADDR32 under llvm-ml64, so keep the [rip].
+	lea rcx, func2[rip]
 	mov r8, 02h
 	call rcx
 	mov rsi, rax
