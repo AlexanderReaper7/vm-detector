@@ -59,7 +59,7 @@ bool has_id(const std::vector<Result>& rows,const std::string& id)
 }
 void latest_tests()
 {
-	for (const auto& file:{"hid-read-v2.txt","hid-read-repeat.txt"}) {
+	for (const auto& file:{"hid-read-v2.txt","hid-read-repeat.txt","hid-fixed.txt"}) {
 		const auto b=latest(file);
 		std::string log;
 		if (b.size()>=2 && b[0]==0xff && b[1]==0xfe) {
@@ -81,7 +81,11 @@ void latest_tests()
 		}
 		require(devices.size()==2,"two recorded HID interfaces");
 		s.hid=decltype(s.hid)::ok(devices); auto rows=evaluate(s);
-		require(std::count_if(rows.begin(),rows.end(),[](const Result& r){return r.id=="CODEX-004" && r.outcome==CHECK_BAD;})==1,
+		if (std::string(file)=="hid-fixed.txt") {
+			require(rows.size()==1 && result(rows,"CODEX-004").outcome==CHECK_GOOD,"actual fixed-QEMU capture clears HID identifier");
+			for (const auto& device:devices)
+				require(device.indexed_strings.at(3).value.empty(),"fixed device successfully returns empty index 3");
+		} else require(std::count_if(rows.begin(),rows.end(),[](const Result& r){return r.id=="CODEX-004" && r.outcome==CHECK_BAD;})==1,
 			"both captured devices produce one shared HID-identifier result");
 		for (auto& device:s.hid.value) device.indexed_strings[3]=Sample<std::string>::ok("Physical tablet");
 		require(!any(evaluate(s),CHECK_BAD),"one-field replacement on both devices removes only the identifier");

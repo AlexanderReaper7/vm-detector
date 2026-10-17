@@ -52,6 +52,8 @@
 #*.filters   merge=binary
 #*.vcxitems  merge=binary
 
-# Captured evidence must retain its exact bytes for SHA-256 replay checks.
-tests/fixtures/** -text
-docs/verification/*.txt -text
+# CRLF is valid in this Windows source tree. Captured evidence retains exact
+# bytes and field padding for replay, including whitespace emitted by devices.
+* whitespace=cr-at-eol
+tests/fixtures/** -text -whitespace
+docs/verification/*.txt -text -whitespace

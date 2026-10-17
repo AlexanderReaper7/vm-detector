@@ -1,0 +1,12 @@
+{
+  "counts": {
+    "GOOD": 35,
+    "BAD": 3,
+    "OBS": 25,
+    "ERROR": 0
+  },
+  "hid_identifier": "GOOD",
+  "original_probe_sha256": "b31c05c97ddd3eca911458372a4dddea1e0e49873645b65535556748efb4103e",
+  "detector_sha256": "22f23814295c1f858c2e61d0e1c6c17eb19568031610ff3f34cf5ed91152857f",
+  "hid_log_sha256": "1103ac9b43813aa18e84272c1671b6227b279bde8335f74462db7b10fc6109db"
+}

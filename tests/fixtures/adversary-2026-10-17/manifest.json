@@ -44,6 +44,14 @@
       "member": "gpt-6.1-sol-20261017-2011/findings.jsonl",
       "bytes": 21976,
       "sha256": "07d9890acaf9270f24cec660750f7fc4365d8c92cf45631fa14c769f50e08bc1"
+    },
+    {
+      "file": "hid-fixed.txt",
+      "guest_path": "C:\\adversary\\verification\\latest-checks-20261017\\hid-fixed.txt",
+      "instance": "tell-fix-check",
+      "qemu": "/nix/store/0h44zwg116nq031vc1srrk440f8y8v19-qemu-quiet-11.1.1",
+      "bytes": 1974,
+      "sha256": "1103ac9b43813aa18e84272c1671b6227b279bde8335f74462db7b10fc6109db"
     }
   ]
 }
