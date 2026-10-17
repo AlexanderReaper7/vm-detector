@@ -1,0 +1,346 @@
+[
+  {
+    "source": "opus",
+    "finding": "vm-001",
+    "category": "vm",
+    "title": "UEFI firmware self-identifies as EDK II (OVMF) in SystemBiosVersion, contradicting the claimed AMI/MSI board",
+    "disposition": "observation",
+    "checks": [
+      "VM-005"
+    ],
+    "reason": "EDK II also runs on physical hardware; BIOS strings remain observational."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-002",
+    "category": "vm",
+    "title": "ACPI DSDT contains QEMU's literal hotplug/GPE container device names",
+    "disposition": "observation",
+    "checks": [
+      "VM-009",
+      "CODEX-003"
+    ],
+    "reason": "Original hotplug names and remaining ACPI port templates. Generic reserved-resource stubs are not unique VM identifiers."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-003",
+    "category": "vm",
+    "title": "Intel ICH9/Q35 southbridge emulated on a system claiming an AMD Socket AM5 B650 board",
+    "disposition": "observation",
+    "checks": [
+      "VM-004/012"
+    ],
+    "reason": "Q35/ICH9 alongside AMD CPU is a platform clue, not a CPU specification contradiction."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-004",
+    "category": "vm",
+    "title": "Display adapter is the Bochs/QEMU standard VGA device (VEN_1234&DEV_1111)",
+    "disposition": "strict",
+    "checks": [
+      "VM-002"
+    ],
+    "reason": "Explicit QEMU standard VGA PCI identity; retained SPICE display remains detectable."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-005",
+    "category": "vm",
+    "title": "Boot SSD advertises 'Samsung SSD 990 PRO 2TB' but reports exactly 256 GiB",
+    "disposition": "observation",
+    "checks": [
+      "VM-010"
+    ],
+    "reason": "Smaller NVMe namespaces can exist on real drives. Failed Samsung fetch does not establish a model-specific invariant."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-006",
+    "category": "vm",
+    "title": "CPUID reports no MONITOR/MWAIT, no PCID, and no Core Performance Boost on a CPU identifying as Ryzen 5 9600X",
+    "disposition": "observation",
+    "checks": [
+      "VM-022",
+      "OPUS-006"
+    ],
+    "reason": "Measure CPB and sparse power profile. Host lacks PCID/MONITOR too; their absence is not a scored contradiction."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-007",
+    "category": "vm",
+    "title": "CPUID takes ~1037 cycles - an unconditional VM exit (bare metal is ~1-2 orders of magnitude cheaper)",
+    "disposition": "not_promoted",
+    "checks": [],
+    "reason": "Sustained timing has no universal physical threshold; empty/NOP loop is not a physical CPUID control. Existing TIMING_ATTACKS remains separate."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-008",
+    "category": "vm",
+    "title": "Two ACPI tables still carry OVMF's INTEL/EDK2 header IDs while the rest were rewritten to AMI",
+    "disposition": "observation",
+    "checks": [
+      "OPUS-008"
+    ],
+    "reason": "Header OEM identifiers checked on validated ACPI tables. EDK II also runs physically."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-009",
+    "category": "vm",
+    "title": "ACPI table set is missing every AMD platform table a Ryzen/B650 system must publish",
+    "disposition": "observation",
+    "checks": [
+      "OPUS-009"
+    ],
+    "reason": "Missing IVRS/CRAT/CDIT is a firmware-profile clue. No assertion these are mandatory on every physical Ryzen configuration."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-010",
+    "category": "vm",
+    "title": "SMBIOS memory array has one 16 GiB DIMM and a maximum capacity equal to the installed capacity",
+    "disposition": "observation",
+    "checks": [
+      "OPUS-010"
+    ],
+    "reason": "Single memory slot and maximum equal installed capacity, derived from validated SMBIOS fields. Unknown RAM sizes omit the predicate; no mandatory physical slot-count claim."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-011",
+    "category": "vm",
+    "title": "Default gateway's MAC address is in QEMU's 52:54:00 OUI",
+    "disposition": "observation",
+    "checks": [
+      "VM-029"
+    ],
+    "reason": "Cached gateway MAC only; no network probes and no claim that DNS/SSH works."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-012",
+    "category": "vm",
+    "title": "Emulated Intel 82574L NIC and Renesas xHCI on a board whose real I/O is AMD Promontory",
+    "disposition": "observation",
+    "checks": [
+      "VM-007",
+      "VM-008"
+    ],
+    "reason": "Intel NIC and Renesas controller are physical products; motherboard optional/disabled peripherals are not mandatory."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-013",
+    "category": "vm",
+    "title": "PS/2 keyboard, PS/2 mouse and legacy RTC present as ACPI devices on a board with no PS/2 ports",
+    "disposition": "observation",
+    "checks": [
+      "OPUS-013"
+    ],
+    "reason": "Present ACPI PS/2 pair only. Absence of an external connector does not prove an internal controller impossible; RTC is ordinary."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-014",
+    "category": "vm",
+    "title": "Single ACPI thermal zone pinned at exactly 26.85 C, and NVMe SMART log is mostly empty",
+    "disposition": "partial",
+    "checks": [
+      "VM-045",
+      "VM-025"
+    ],
+    "reason": "Literal thermal AML and known raw SMART defaults are observed. A single temperature does not establish invariance under load. Blank WMI reliability fields are not promoted to a hardware contradiction."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-015",
+    "category": "vm",
+    "title": "Max extended CPUID leaf claims 0x80000022 but the SME/SEV leaf 0x8000001F returns all zeros",
+    "disposition": "observation",
+    "checks": [
+      "OPUS-015"
+    ],
+    "reason": "In-range all-zero SME/SEV leaf is a clue; maximum leaf does not require every feature to be implemented or enabled."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-016",
+    "category": "vm",
+    "title": "SMBIOS version 2.8 with only 42 structures in 1659 bytes, from a BIOS dated 2024",
+    "disposition": "observation",
+    "checks": [
+      "OPUS-016"
+    ],
+    "reason": "SMBIOS major/minor and structure count are measured, not treated as a standard violation merely because the BIOS is recent."
+  },
+  {
+    "source": "opus",
+    "finding": "vm-017",
+    "category": "vm",
+    "title": "Flat single-bus PCI topology with 8 devices, no PCIe root ports, no AMD data-fabric functions and no IOMMU",
+    "disposition": "observation",
+    "checks": [
+      "OPUS-017"
+    ],
+    "reason": "Bus-zero-only Ryzen PCI set with no AMD identities is a topology clue. Disabled IOMMU or missing root-port enumeration alone is not scored."
+  },
+  {
+    "source": "opus",
+    "finding": "lab-001",
+    "category": "lab",
+    "title": "Autologon unattend for an account named 'analyst', commented as an unattended benchmark guest",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "opus",
+    "finding": "lab-002",
+    "category": "lab",
+    "title": "Provisioning script left in SetupComplete.cmd that forces every network profile to Private",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "opus",
+    "finding": "lab-003",
+    "category": "lab",
+    "title": "OpenSSH Server installed and listening on all interfaces",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "opus",
+    "finding": "lab-004",
+    "category": "lab",
+    "title": "No display is attached: zero EDID records and a 1 Hz reported refresh rate",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "opus",
+    "finding": "lab-005",
+    "category": "lab",
+    "title": "Secure Boot disabled on a Windows 11 install that claims a 2024 retail board",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "opus",
+    "finding": "tooling-001",
+    "category": "tooling",
+    "title": "adversary-t3 scheduled task running the harness server out of C:\\adversary",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "opus",
+    "finding": "tooling-002",
+    "category": "tooling",
+    "title": "C:\\adversary tree holding the harness, its agents and per-run work directories",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "opus",
+    "finding": "tooling-003",
+    "category": "tooling",
+    "title": "Established inbound SSH session from 192.168.122.1 (the hypervisor host) driving the harness",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "codex",
+    "finding": "VM-001",
+    "category": "vm",
+    "title": "Explicit QEMU Standard VGA PCI identity 1234:1111",
+    "disposition": "strict",
+    "checks": [
+      "VM-002"
+    ],
+    "reason": "Explicit standard VGA identity; present device enumeration succeeds independently of network fetches."
+  },
+  {
+    "source": "codex",
+    "finding": "VM-002",
+    "category": "vm",
+    "title": "NVMe Identify retains QEMU controller fingerprint and inconsistent total capacity",
+    "disposition": "strict_and_observation",
+    "checks": [
+      "CODEX-002-CAP",
+      "CODEX-002-OUI",
+      "VM-010",
+      "VM-024"
+    ],
+    "reason": "BAD only for NVMe 1.4 OACS namespace management, validated usable non-thin namespace 1 and all 128 TNVMCAP bits zero. OUI/controller defaults/model-size mismatch are observations. Failed Samsung fetch is not used."
+  },
+  {
+    "source": "codex",
+    "finding": "VM-003",
+    "category": "vm",
+    "title": "ACPI FWCF device preserves the QEMU fw_cfg register layout with a generic HID",
+    "disposition": "observation",
+    "checks": [
+      "CODEX-003"
+    ],
+    "reason": "Validated AML resource/operation-region templates, not a full AML interpreter or active I/O protocol probe. Guest iasl failed; archive independently decoded on host."
+  },
+  {
+    "source": "codex",
+    "finding": "VM-004",
+    "category": "vm",
+    "title": "USB indexed string descriptors disclose QEMU behind Logitech and Dell identities",
+    "disposition": "strict",
+    "checks": [
+      "CODEX-004"
+    ],
+    "reason": "Successful HID indexed-string responses explicitly name QEMU. Interface enumeration/open failures are ERROR. Rejected optional indices are inapplicable; no input reports are read."
+  },
+  {
+    "source": "codex",
+    "finding": "LAB-001",
+    "category": "lab",
+    "title": "Private DHCP/NAT-style network and cached QEMU-style gateway MAC",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "codex",
+    "finding": "LAB-002",
+    "category": "lab",
+    "title": "Generic default monitor presentation; EDID WMI query unsupported",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "codex",
+    "finding": "LAB-003",
+    "category": "lab",
+    "title": "Secure Boot disabled in current guest configuration",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  },
+  {
+    "source": "codex",
+    "finding": "TOOLING-001",
+    "category": "tooling",
+    "title": "SYSTEM research pass and files in the designated C:\\adversary workspace",
+    "disposition": "excluded",
+    "checks": [],
+    "reason": "Lab configuration or research tooling, not a virtualization check. No report row and no score contribution."
+  }
+]

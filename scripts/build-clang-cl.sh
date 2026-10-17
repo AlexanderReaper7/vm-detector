@@ -42,7 +42,7 @@ done < "$OBJ/incs.txt"
 
 # 2. import-lib case shim
 for L in Iphlpapi.lib Mpr.lib powrprof.lib Psapi.lib setupapi.lib Shlwapi.lib Slwga.lib \
-         wbemuuid.lib Winmm.lib Ws2_32.lib user32.lib advapi32.lib ole32.lib oleaut32.lib shell32.lib; do
+         wbemuuid.lib Winmm.lib Ws2_32.lib ncrypt.lib crypt32.lib tbs.lib wevtapi.lib hid.lib user32.lib advapi32.lib ole32.lib oleaut32.lib shell32.lib; do
   for d in "${LIBDIRS[@]}"; do r=$(find "$d" -maxdepth 1 -iname "$L" | head -1); [ -n "$r" ] && { ln -sf "$(readlink -f "$r")" "$LIBSHIM/$L"; break; }; done
 done
 
@@ -61,7 +61,7 @@ SRCS=(); for f in "${RAW[@]}"; do [ "$f" = "pch.cpp" ] && continue
 # a non-LFH _HEAP field as NULL and false-positives on bare-metal Win11 too. The
 # MSBuild project embeds it (vm-detector.vcxproj Manifest Include); lld-link does
 # the same with /manifest:embed /manifestinput (2026-10-11).
-clang-cl /nologo /std:c++17 /EHsc /O2 /MT /DNDEBUG /D_CONSOLE /DWIN32 /DUNICODE /D_UNICODE \
+clang-cl /nologo /std:c++17 /EHsc /O2 /clang:-O3 /clang:-march=native /clang:-mtune=native /clang:-flto=thin /MT /DNDEBUG /D_CONSOLE /DWIN32 /DUNICODE /D_UNICODE \
   /Y- /FIpch.h "/I$SHIM" /I. \
   "${SRCS[@]}" "$OBJ/int2d.obj" "$OBJ/antidisassm.obj" \
   "/Fe:$OUT" \

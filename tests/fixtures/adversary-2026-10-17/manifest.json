@@ -1,0 +1,49 @@
+{
+  "archive": "https://github.com/AlexanderReaper7/stealth-vm/blob/de5dfe5/docs/baselines/2026-10-17-adversary-codex-2011.tar.gz",
+  "files": [
+    {
+      "file": "nvme-controller.bin",
+      "guest_path": "C:\\adversary\\work\\gpt-6.1-sol-20261017-2011\\raw\\nvme-identify-49-1.bin",
+      "bytes": 4096,
+      "sha256": "ff2b97c80ebc49fdbe80508222401b72f312eef7008626f2d99b960cf95a0239"
+    },
+    {
+      "file": "nvme-namespace.bin",
+      "guest_path": "C:\\adversary\\work\\gpt-6.1-sol-20261017-2011\\raw\\nvme-identify-50-0.bin",
+      "bytes": 4096,
+      "sha256": "e60eef56e9f06f2d68b1b915e8d3768cc4b212f42ad32b895aa8136ac8191a77"
+    },
+    {
+      "file": "DSDT.bin",
+      "guest_path": "C:\\adversary\\work\\gpt-6.1-sol-20261017-2011\\raw\\HKEY_LOCAL_MACHINE_HARDWARE_ACPI_DSDT_ALASKA_A_M_I_00000001.bin",
+      "bytes": 10070,
+      "sha256": "d68efcc6c1463d97c5797a16ef31bc024c6b58d25d00bbe45cd589a63eac8378"
+    },
+    {
+      "file": "hid-read-v2.txt",
+      "guest_path": "C:\\adversary\\work\\gpt-6.1-sol-20261017-2011\\raw\\hid-read-v2.txt",
+      "bytes": 4196,
+      "sha256": "61d49f406a9f7fd8f39a8506f5d5782b81df17affbe06bf28c4557a73e13f94f"
+    },
+    {
+      "file": "hid-read-repeat.txt",
+      "guest_path": "C:\\adversary\\work\\gpt-6.1-sol-20261017-2011\\raw\\hid-read-repeat.txt",
+      "bytes": 2100,
+      "sha256": "64a2daf7c8f9ce1a4601adb6c97bd883b6309038b69efb9133b5ec77a64b7e89"
+    },
+    {
+      "file": "opus-findings.jsonl",
+      "archive": "2026-10-17-adversary-opus-1753.tar.gz",
+      "member": "claude-opus-5-5-20261017-1753/findings.jsonl",
+      "bytes": 29157,
+      "sha256": "370c4437a48723d6970d9c3a2c348d436713f95b88c386c756cd18f16d6acad7"
+    },
+    {
+      "file": "codex-findings.jsonl",
+      "archive": "2026-10-17-adversary-codex-2011.tar.gz",
+      "member": "gpt-6.1-sol-20261017-2011/findings.jsonl",
+      "bytes": 21976,
+      "sha256": "07d9890acaf9270f24cec660750f7fc4365d8c92cf45631fa14c769f50e08bc1"
+    }
+  ]
+}

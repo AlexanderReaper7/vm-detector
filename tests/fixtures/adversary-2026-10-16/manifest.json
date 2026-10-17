@@ -1,0 +1,48 @@
+{
+  "collected": "2026-10-16",
+  "description": "Raw guest evidence. Only hardware identity and firmware data; no credentials or private TPM values.",
+  "files": [
+    {
+      "file": "smbios.bin",
+      "source": "C:\\adversary\\work\\dumps\\smbios.bin",
+      "bytes": 1606,
+      "sha256": "2f20e5e31d02d5ceb103fc4e9bebd786d3b44992c59238c065bf3992d03f07c8"
+    },
+    {
+      "file": "nvme_identify_ctrl.bin",
+      "source": "C:\\adversary\\work\\dumps\\nvme_identify_ctrl.bin",
+      "bytes": 4096,
+      "sha256": "366757547c6434ddd2f0e9e895908fb320c12e5a53c62551b0005c76233423e0"
+    },
+    {
+      "file": "DSDT.bin",
+      "source": "C:\\adversary\\work\\dumps\\acpi\\DSDT.bin",
+      "bytes": 10075,
+      "sha256": "72d62d4757a97dd0c4ae87f897107e0000c8f5b4db14d6d9930385cc41d21fae"
+    },
+    {
+      "file": "FACP_0.bin",
+      "source": "C:\\adversary\\work\\dumps\\acpi\\FACP_0.bin",
+      "bytes": 244,
+      "sha256": "bd346f8f25eb47f57f47115fd2bfdd9bbc95b21f0c9c8c285649f24a8350240c"
+    },
+    {
+      "file": "APIC_0.bin",
+      "source": "C:\\adversary\\work\\dumps\\acpi\\APIC_0.bin",
+      "bytes": 208,
+      "sha256": "6d3d5fc7bb3860caf43d797101ed991dcf125d06580e5c19fc69d00b1384500d"
+    },
+    {
+      "file": "SSDT_0.bin",
+      "source": "C:\\adversary\\work\\dumps\\acpi\\SSDT_0.bin",
+      "bytes": 72,
+      "sha256": "2912e7df31d0408495b29d4805c3330d67f5a86b4a820957e9eb627f9a640248"
+    },
+    {
+      "file": "measured-boot.bin",
+      "source": "C:\\Windows\\Logs\\MeasuredBoot\\0000000006-0000000000.log",
+      "bytes": 54817,
+      "sha256": "e2d40cf86d7aa864c47712c3477ee3c36c3743c882f2a052292658842881fe67"
+    }
+  ]
+}

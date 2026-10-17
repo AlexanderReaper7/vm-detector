@@ -83,6 +83,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -214,6 +219,9 @@
     <ClInclude Include="AntiDump\SizeOfImage.h" />
     <ClInclude Include="AntiVM\Generic.h" />
     <ClInclude Include="AntiVM\HyperV.h" />
+    <ClInclude Include="AntiVM\Adversary.h" />
+    <ClInclude Include="AntiVM\AdversaryWindows.h" />
+    <ClInclude Include="Shared\CheckOutcome.h" />
     <ClInclude Include="AntiVM\KVM.h" />
     <ClInclude Include="AntiVM\Parallels.h" />
     <ClInclude Include="AntiVM\pch.h" />
@@ -290,6 +298,8 @@
     <ClCompile Include="AntiDump\SizeOfImage.cpp" />
     <ClCompile Include="AntiVM\Generic.cpp" />
     <ClCompile Include="AntiVM\HyperV.cpp" />
+    <ClCompile Include="AntiVM\Adversary.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="AntiVM\AdversaryWindows.cpp" />
     <ClCompile Include="AntiVM\KVM.cpp" />
     <ClCompile Include="AntiVM\Parallels.cpp" />
     <ClCompile Include="AntiVM\Qemu.cpp" />
@@ -314,7 +324,7 @@
     <ClCompile Include="Shared\APIs.cpp" />
     <ClCompile Include="Shared\ApiTypeDefs.cpp" />
     <ClCompile Include="Shared\Common.cpp" />
-    <ClCompile Include="Shared\stats.cpp" />
+    <ClCompile Include="Shared\stats.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
     <ClCompile Include="Shared\log.cpp" />
     <ClCompile Include="Shared\Utils.cpp" />
     <ClCompile Include="TimingAttacks\timing.cpp" />

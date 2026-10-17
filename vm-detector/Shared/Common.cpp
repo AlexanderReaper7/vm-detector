@@ -54,7 +54,7 @@ VOID _print_check_text(const TCHAR* szMsg)
 	_tprintf(TEXT("[*] %s"), szMsg);
 
 	/* align the result according to the length of the text */
-	size_t spaces_to_padd = 95 - _tcslen(szMsg);
+	size_t spaces_to_padd = _tcslen(szMsg) < 95 ? 95 - _tcslen(szMsg) : 0;
 	while (spaces_to_padd > 0) {
 		_tprintf(TEXT(" "));
 		spaces_to_padd--;
@@ -68,6 +68,10 @@ VOID _print_check_result(int result, const TCHAR* szMsg)
 
 	if (result == TRUE)
 		print_detected();
+	else if (result == CHECK_OBSERVATION)
+		_tprintf(TEXT("[ OBS  ]\n"));
+	else if (result == CHECK_ERROR)
+		_tprintf(TEXT("[ ERROR ]\n"));
 	else
 		print_not_detected();
 

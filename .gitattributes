@@ -51,3 +51,7 @@
 #*.props     merge=binary
 #*.filters   merge=binary
 #*.vcxitems  merge=binary
+
+# Captured evidence must retain its exact bytes for SHA-256 replay checks.
+tests/fixtures/** -text
+docs/verification/*.txt -text

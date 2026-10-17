@@ -2,6 +2,7 @@
 //
 
 #include "pch.h"
+#include "AntiVM/AdversaryWindows.h"
 
 
 BOOL ENABLE_TLS_CHECKS = FALSE;
@@ -358,6 +359,7 @@ int main(int argc, char* argv[]){
 		qemu_dir();
 		exec_check(&qemu_firmware_SMBIOS, TEXT("Checking SMBIOS firmware  "));
 		exec_check(&qemu_firmware_ACPI, TEXT("Checking ACPI tables  "));
+		qemu_adversary_checks();
 
 	}
 

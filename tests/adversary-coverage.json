@@ -1,0 +1,242 @@
+[
+  {
+    "finding": "VM-001",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-002",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-003",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-004",
+    "disposition": "observation",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-005",
+    "disposition": "observation",
+    "reason": "EDK II identity in Windows SystemBiosVersion only; raw SMBIOS lacks that Windows-derived string. Legacy inventory values are not independent proof."
+  },
+  {
+    "finding": "VM-006",
+    "disposition": "observation",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-007",
+    "disposition": "observation",
+    "reason": "The Intel NIC is a physical product. Reported only as an observation."
+  },
+  {
+    "finding": "VM-008",
+    "disposition": "observation",
+    "reason": "The NEC controller is a physical product. Reported only as an observation."
+  },
+  {
+    "finding": "VM-009",
+    "disposition": "observation",
+    "reason": "Requires the four distinct resource names, not four copies of one name."
+  },
+  {
+    "finding": "VM-010",
+    "disposition": "observation",
+    "reason": "Measures whole-device length. Namespace configuration can legitimately reduce capacity on physical NVMe devices."
+  },
+  {
+    "finding": "VM-011",
+    "disposition": "strict",
+    "reason": "Shares one strict subsystem-ID check with VM-003."
+  },
+  {
+    "finding": "VM-012",
+    "disposition": "observation",
+    "reason": "Covered with VM-004 by AMD CPU plus Q35/ICH9 identities; missing optional AMD peripherals alone is not a failure."
+  },
+  {
+    "finding": "VM-013",
+    "disposition": "observation",
+    "reason": "Manufacturer mismatch is an observation; firmware can be modified."
+  },
+  {
+    "finding": "VM-014",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-015",
+    "disposition": "observation",
+    "reason": "Handle numbering is a heuristic, not a requirement of the SMBIOS specification."
+  },
+  {
+    "finding": "VM-016",
+    "disposition": "observation",
+    "reason": "Generic or incomplete populated-RAM inventory is an observation."
+  },
+  {
+    "finding": "VM-017",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-018",
+    "disposition": "observation",
+    "reason": "Table count and EDK2 headers are observations; EDK2 also runs physically."
+  },
+  {
+    "finding": "VM-019",
+    "disposition": "observation",
+    "reason": "Identifies a narrow legacy-cache profile, without assuming all Ryzen models have identical cache."
+  },
+  {
+    "finding": "VM-020",
+    "disposition": "observation",
+    "reason": "Requires AMD SVM support before reading ASIDs. The count is a profile, not a universal silicon invariant."
+  },
+  {
+    "finding": "VM-021",
+    "disposition": "observation",
+    "reason": "Requires bits 26, 27 and 31 together. Physical strix reports EDX=0x10000110, so the report's assertion that AMD never sets bit 28 is false. This remains an observation."
+  },
+  {
+    "finding": "VM-022",
+    "disposition": "observation",
+    "reason": "Requires the exact sparse combination; firmware and microcode affect power features."
+  },
+  {
+    "finding": "VM-023",
+    "disposition": "not_promoted",
+    "reason": "The empty timing bracket is not a physical CPUID baseline. Existing TIMING_ATTACKS probes remain, but this report does not establish a new universal median threshold."
+  },
+  {
+    "finding": "VM-024",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-025",
+    "disposition": "observation",
+    "reason": "Matches temperature 323 K with zero spare and spare threshold. Power counters can increase. A single reading does not establish constant temperature."
+  },
+  {
+    "finding": "VM-026",
+    "disposition": "observation",
+    "reason": "Compares Identify with the active firmware slot, not an arbitrary stored revision. Remains observational."
+  },
+  {
+    "finding": "VM-027",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-028",
+    "disposition": "observation",
+    "reason": "BootManagerMenuApp name only. Disabled Secure Boot or missing PK does not imply virtualization."
+  },
+  {
+    "finding": "VM-029",
+    "disposition": "observation",
+    "reason": "Reads cached ARP/neighbour entries for default routes. Sends no packets. Prefix and subnet alone do not prove this computer is virtual."
+  },
+  {
+    "finding": "VM-030",
+    "disposition": "not_promoted",
+    "reason": "An invariant timestamp counter normally has a constant rate on physical CPUs. No generic clock-rate VM predicate follows from this measurement."
+  },
+  {
+    "finding": "VM-031",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-032",
+    "disposition": "observation",
+    "reason": "Exact stock-OVMF language list is a profile, not proof."
+  },
+  {
+    "finding": "VM-033",
+    "disposition": "observation",
+    "reason": "Exact HPET block identity is a profile. No unsupported assertion about all AMD timers."
+  },
+  {
+    "finding": "VM-034",
+    "disposition": "observation",
+    "reason": "Checks SMBIOS type-19 inventory only, not the actual physical RAM map."
+  },
+  {
+    "finding": "VM-035",
+    "disposition": "observation",
+    "reason": "Reads a structured processor-power event from this boot, not translated message text."
+  },
+  {
+    "finding": "VM-036",
+    "disposition": "observation",
+    "reason": "Parses MADT subtables with bounds and length checks. Pattern is observational."
+  },
+  {
+    "finding": "VM-037",
+    "disposition": "observation",
+    "reason": "Compares single-processor, single-L3 inventory with AMD CPUID. Disagreement can also reflect firmware bugs."
+  },
+  {
+    "finding": "VM-038",
+    "disposition": "observation",
+    "reason": "Inventory versus present HDAUDIO devices; disabled hardware remains a possible explanation."
+  },
+  {
+    "finding": "VM-039",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-040",
+    "disposition": "observation",
+    "reason": "Parses the current TCG2 event log. ACPI DATA measurements are an OVMF-associated observation, not exclusive VM proof."
+  },
+  {
+    "finding": "VM-041",
+    "disposition": "observation",
+    "reason": "Checks Windows PCI device classification. Does not infer a physical link speed from missing properties."
+  },
+  {
+    "finding": "VM-042",
+    "disposition": "not_promoted",
+    "reason": "Browser discovery traffic identifies a network participant, not virtualization of this computer. The gateway observation VM-029 retains the useful network diagnostic without a timed packet capture."
+  },
+  {
+    "finding": "VM-043",
+    "disposition": "strict",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-044",
+    "disposition": "not_promoted",
+    "reason": "An option-ROM device path and byte length do not identify its code as iPXE. iPXE can also run on physical hardware."
+  },
+  {
+    "finding": "VM-045",
+    "disposition": "observation",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-046",
+    "disposition": "observation",
+    "reason": "Reads only vendor/product fields from the Storport provider. Historical evidence stays observational."
+  },
+  {
+    "finding": "VM-047",
+    "disposition": "observation",
+    "reason": "Explicit implementation identity; see primary references in docs/adversary-checks.md."
+  },
+  {
+    "finding": "VM-048",
+    "disposition": "not_promoted",
+    "reason": "A version-4 UUID is valid on physical hardware and need not encode a MAC. No VM predicate follows from its UUID version."
+  }
+]

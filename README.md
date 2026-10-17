@@ -60,6 +60,8 @@ Examples:
   vm-detector.exe --sleep 30
 ```
 
+The QEMU category includes the [adversarial findings checks](docs/adversary-checks.md), their scoring policy, per-finding coverage and verification limits. New probes report observations and errors separately; inapplicable checks produce no output.
+
 ## Download
 
 You can download built binaries (x86, x64) from this project's [releases page](https://github.com/LordNoteworthy/al-khaser/releases). The password for the 7zs can be found [here](https://github.com/LordNoteworthy/al-khaser/blob/master/.github/workflows/release.yml#L25).

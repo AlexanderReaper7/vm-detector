@@ -1,4 +1,5 @@
 #pragma once
+#include "CheckOutcome.h"
 
 /*
 Per-category pass/fail tallying. Every check result flows through
@@ -32,11 +33,13 @@ typedef enum {
 typedef struct {
 	int passed;
 	int failed;
+	int observed;
+	int errors;
 } CategoryStat;
 
 extern const char* category_names[CAT_COUNT];
 extern Category g_current_category;
 
 void stats_init(void);
-void stats_record(Category cat, int result); // result: TRUE = detected (failed), FALSE = passed
+void stats_record(Category cat, int result); // CheckOutcome; legacy TRUE/FALSE remain BAD/GOOD.
 void stats_print(void);

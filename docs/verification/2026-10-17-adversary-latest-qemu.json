@@ -1,0 +1,15 @@
+{
+  "counts": {
+    "GOOD": 34,
+    "BAD": 4,
+    "OBS": 25,
+    "ERROR": 0
+  },
+  "exe_sha256": "22f23814295c1f858c2e61d0e1c6c17eb19568031610ff3f34cf5ed91152857f",
+  "confirmed_bad": [
+    "VGA identity",
+    "old swtpm EK issuer",
+    "NVMe 1.4 zero-total capacity contradiction",
+    "HID QEMU indexed string"
+  ]
+}
