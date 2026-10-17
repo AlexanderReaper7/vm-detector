@@ -150,7 +150,7 @@ Native tests replay the archived controller, namespace, DSDT and both HID captur
 
 ### Verification on 2026-10-17
 
-The ASan/UBSan suite passed 26,360 assertions. Both fixture manifests and the original/latest coverage checks passed. The final Windows x64 binary cross-built with clang-cl, host CPU optimization and ThinLTO; MSBuild and x86 were not run. Existing upstream compiler warnings remain.
+The ASan/UBSan suite passed 26,362 assertions. Both fixture manifests and the original/latest coverage checks passed. The final Windows x64 binary cross-built with clang-cl, host CPU optimization and ThinLTO; MSBuild and x86 were not run. Existing upstream compiler warnings remain.
 
 Live verification ran `--check QEMU` as SYSTEM inside the unchanged, already-running `adversary`. The [captured output](verification/2026-10-17-adversary-latest-qemu.txt) has 34 GOOD, 4 BAD, 25 OBS and zero ERROR rows. An independent parser counted every result row and matched the printed totals. BAD results are retained standard VGA, retained old swtpm EK issuer, the newly measured NVMe capacity contradiction and one shared HID identifier result covering both devices. Host and guest executable SHA-256 matched `22f23814295c1f858c2e61d0e1c6c17eb19568031610ff3f34cf5ed91152857f`. The task exited 0; the temporary scheduled task and Defender exclusion were removed. No VM restart occurred.
 

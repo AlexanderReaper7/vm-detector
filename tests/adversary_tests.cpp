@@ -93,6 +93,10 @@ void latest_tests()
 	require(evaluate(s).empty(),"no readable optional strings produces no row");
 	s.hid.value[0].indexed_strings[3]=Sample<std::string>::error("access denied");
 	require(evaluate(s).size()==1 && result(evaluate(s),"CODEX-004").outcome==CHECK_ERROR,"real HID query error is visible without GOOD");
+	s.hid.value[0].indexed_strings[1]=Sample<std::string>::ok("Logitech");
+	require(!any(evaluate(s),CHECK_GOOD) && any(evaluate(s),CHECK_ERROR),"partial negative HID scan cannot become GOOD after required query failure");
+	s.hid.value[0].indexed_strings[1]=Sample<std::string>::ok("QEMU USB Tablet");
+	require(any(evaluate(s),CHECK_BAD) && any(evaluate(s),CHECK_ERROR),"explicit positive HID evidence survives a separate query error");
 	s.hid=decltype(s.hid)::error("enumeration failure");
 	require(result(evaluate(s),"CODEX-004").outcome==CHECK_ERROR,"HID enumeration failure is ERROR");
 	s={}; Disk disk; disk.path="captured namespace 1";

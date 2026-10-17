@@ -41,12 +41,16 @@ for f in json.loads((root/'manifest.json').read_text())['files']:
     data=(root/f['file']).read_bytes()
     assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256'], f['file']
 coverage=json.loads(Path('tests/adversary-latest-coverage.json').read_text())
-expected={(model,r['id']) for model in ('opus','codex') for r in map(json.loads,(root/(model+'-findings.jsonl')).read_text().splitlines())}
+original={(model,r['id']):r for model in ('opus','codex') for r in map(json.loads,(root/(model+'-findings.jsonl')).read_text().splitlines())}
+expected=set(original)
 actual={(r['source'],r['finding']) for r in coverage}
 assert len(coverage)==len(actual)==len(expected)==33 and actual==expected
 source=Path('vm-detector/AntiVM/Adversary.cpp').read_text()
 for r in coverage:
     assert r['reason']
+    report=original[r['source'],r['finding']]
+    assert r['category']==report['category'] and r['title']==report['title'],r
+    if r['category']=='vm': assert r['disposition']!='excluded',r
     if r['category']!='vm': assert r['disposition']=='excluded' and not r['checks']
     for check in r['checks']: assert '"'+check+'"' in source, (r,check)
     if r['disposition'] not in ('excluded','not_promoted'): assert r['checks'],r
