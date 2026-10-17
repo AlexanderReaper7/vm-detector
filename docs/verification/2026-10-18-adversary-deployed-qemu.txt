@@ -1,0 +1,124 @@
+[vm-detector version 0.82]
+-------------------------[Initialisation]-------------------------
+
+[*] You are running: Microsoft Windows 10  (build 26300) 64-bit
+[*] All APIs present and accounted for.
+
+-------------------------[QEMU Detection]-------------------------
+[*] Checking reg key HARDWARE\DEVICEMAP\Scsi\Scsi Port 0\Scsi Bus 0\Target Id 0\Logical Unit Id 0  [ GOOD ]
+[*] Checking reg key HARDWARE\Description\System                                                   [ GOOD ]
+[*] Checking reg key SYSTEM\CurrentControlSet\Enum\PCI\VEN_1B36*                                   [ GOOD ]
+[*] Checking qemu processes qemu-ga.exe                                                            [ GOOD ]
+[*] Checking qemu processes vdagent.exe                                                            [ GOOD ]
+[*] Checking qemu processes vdservice.exe                                                          [ GOOD ]
+[*] Checking QEMU directory C:\Program Files\qemu-ga                                               [ GOOD ]
+[*] Checking QEMU directory C:\Program Files\SPICE Guest Tools                                     [ GOOD ]
+[*] Checking SMBIOS firmware                                                                       [ GOOD ]
+[*] Checking ACPI tables                                                                           [ GOOD ]
+[*] VM-001 QEMU fw_cfg device ID                                                                   [ GOOD ]
+[*] VM-002 QEMU standard VGA PCI identity                                                          [ BAD  ]
+    PCI\VEN_1234&DEV_1111&SUBSYS_00000000&REV_02\3&11583659&1&08
+[*] VM-003/011 QEMU-assigned PCI subsystem identity                                                [ GOOD ]
+[*] VM-009 QEMU hotplug resource device identifiers                                                [ GOOD ]
+[*] VM-007 Intel 82574L device (also exists physically)                                            [ OBS  ]
+    PCI\VEN_8086&DEV_10D3&SUBSYS_00008086&REV_00\3&11583659&1&20
+[*] VM-008 NEC xHCI device (also exists physically)                                                [ OBS  ]
+    PCI\VEN_1033&DEV_0194&SUBSYS_00000000&REV_03\3&11583659&1&30
+[*] OPUS-017 Ryzen PCI inventory confined to bus zero without AMD devices                          [ OBS  ]
+    PCI functions=8; topology clue, not a physical impossibility claim
+[*] OPUS-013 Present ACPI PS/2 keyboard and mouse pair                                             [ OBS  ]
+    PNP0303 and PNP0F13; physical boards may also expose legacy controllers
+[*] VM-004/012 AMD CPU with Q35/ICH9 host chipset                                                  [ OBS  ]
+    PCI\VEN_8086&DEV_29C0&SUBSYS_00000000&REV_00\3&11583659&1&00; PCI\VEN_8086&DEV_2918&SUBSYS_00000000&REV_02\3&11583659&1&F8
+[*] CODEX-004 HID indexed descriptor explicitly names QEMU                                         [ GOOD ]
+[*] OPUS-010 Single-slot memory array maximum equals installed RAM                                 [ OBS  ]
+    slots=1 populated=1 maximum bytes=17179869184 installed bytes=17179869184
+[*] OPUS-016 Legacy SMBIOS entry point and small structure inventory                               [ GOOD ]
+[*] VM-014 SMBIOS processor names a QEMU machine                                                   [ GOOD ]
+[*] VM-006 SMBIOS chassis classified as Other                                                      [ GOOD ]
+[*] VM-015 SMBIOS handles follow QEMU numbering                                                    [ OBS  ]
+    type*256 handles=8 structures=42
+[*] VM-016 Populated RAM has generic type or zero speed                                            [ GOOD ]
+[*] VM-034 SMBIOS low RAM ends exactly at 2 GiB                                                    [ OBS  ]
+    memory-map records only; not a physical-memory measurement
+[*] VM-038 ALC1220 inventory without present HD Audio                                              [ OBS  ]
+    Realtek ALC1220; present HDAUDIO=no
+[*] VM-037 SMBIOS and CPU L3 cache descriptions disagree                                           [ GOOD ]
+[*] VM-013 MSI inventory with ASUS ACPI OEM identity                                               [ GOOD ]
+[*] VM-005 EDK II BIOS inventory (also used physically)                                            [ GOOD ]
+[*] CODEX-003 ACPI declarations match fw_cfg and CPU-hotplug port layout                           [ OBS  ]
+    AML resource templates: 0x510 length 12 and PRST I/O 0xcd8; no live port query
+[*] OPUS-009 Ryzen ACPI set lacks IVRS, CRAT and CDIT                                              [ OBS  ]
+    MCFG/ALASKA/A M I; FACP/ALASKA/A M I; APIC/ALASKA/A M I; HPET/ALASKA/A M I; WSMT/ALASKA/A M I; TPM2/ALASKA/A M I; SSDT/ALASKA/A M I; BGRT/ALASKA/A M I; DSDT/ALASKA/A M I; firmware configuration can also omit these tables
+[*] VM-017 QEMU identity inside ACPI executable tables                                             [ GOOD ]
+[*] OPUS-008 ACPI header names INTEL / EDK2                                                        [ GOOD ]
+[*] VM-018 Small or EDK2-labelled ACPI table set                                                   [ GOOD ]
+[*] VM-033 HPET has QEMU default block identity                                                    [ OBS  ]
+    EventTimerBlockID=0x8086a201
+[*] VM-036 MADT matches QEMU interrupt-routing pattern                                             [ OBS  ]
+    one IOAPIC and four level/high overrides for IRQ 5/9/10/11
+[*] VM-045 ACPI _TMP method returns a literal constant                                             [ OBS  ]
+    matched AML Method(_TMP,0){Return(WordConst)}; no claim about sampled temperature
+[*] VM-043 AMD virtual-only SSBD feature                                                           [ GOOD ]
+[*] VM-020 SVM ASID count matches QEMU default                                                     [ OBS  ]
+    ASIDs=16
+[*] VM-019 Modern AMD CPU with QEMU legacy cache profile                                           [ GOOD ]
+[*] VM-021 AMD leaf 7 advertises IBRS, STIBP and SSBD                                              [ OBS  ]
+    CPUID.7:EDX=0x9c000110
+[*] VM-022 Sparse AMD power-management feature profile                                             [ GOOD ]
+[*] OPUS-006 Ryzen 9600X/9700X omits CPB capability                                                [ GOOD ]
+[*] OPUS-015 Recent AMD memory-encryption leaf is all zero                                         [ GOOD ]
+[*] VM-047 Recent AMD family has limited extended leaves                                           [ OBS  ]
+    family=0x1a max extended=0x80000022
+[*] CODEX-002-OUI NVMe IEEE field matches QEMU default                                             [ OBS  ]
+    \\?\scsi#disk&ven_nvme&prod_samsung_ssd_990#4&214220b9&0&000000#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}; wire IEEE bytes=0x0,0x54,0x52
+[*] CODEX-002-CAP NVMe 1.4 advertises namespace management with zero total capacity                [ BAD  ]
+    \\?\scsi#disk&ven_nvme&prod_samsung_ssd_990#4&214220b9&0&000000#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}; OACS=0x12b TNVMCAP=0; non-thin NCAP=536870912 LBADS=9; NVMe 1.4 section 5.15.2.2 Figure 247
+[*] VM-024 NVMe controller names QEMU                                                              [ GOOD ]
+[*] VM-010 2 TB model exposes less than 1.9 TB                                                     [ OBS  ]
+    \\?\scsi#disk&ven_nvme&prod_samsung_ssd_990#4&214220b9&0&000000#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}; bytes=274877906944; smaller namespaces can also exist physically
+[*] VM-026 NVMe active-slot and Identify revisions disagree                                        [ GOOD ]
+[*] VM-025 NVMe SMART matches QEMU default values                                                  [ GOOD ]
+[*] VM-027 TPM identifies as software TPM                                                          [ GOOD ]
+[*] VM-039 TPM endorsement issuer names swtpm                                                      [ BAD  ]
+    issuer=swtpm-localca subject=adversary:1ecf6ea7-46de-4566-9c28-2aabec20538a; issuer=swtpm-localca subject=adversary:1ecf6ea7-46de-4566-9c28-2aabec20538a
+[*] VM-031 OVMF-specific boot-order variable exists                                                [ GOOD ]
+[*] VM-032 UEFI language list matches stock OVMF                                                   [ OBS  ]
+    en;fr;en-US;fr-FR
+[*] VM-028 Firmware boot menu names EDK2 application                                               [ OBS  ]
+    Windows Boot Manager; UEFI Samsung SSD 990 PRO 2TB S73WNJ0X281324I 1; BootManagerMenuApp; EFI Firmware Setup
+[*] VM-046 Historical storage events name QEMU                                                     [ OBS  ]
+    QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    ; QEMU / QEMU DVD-ROM    
+[*] VM-029 Gateway MAC matches libvirt default prefix                                              [ GOOD ]
+[*] VM-041 Device classified as PCI Express treated as PCI                                         [ OBS  ]
+    PCI\VEN_1033&DEV_0194&SUBSYS_00000000&REV_03\3&11583659&1&30; PCI\VEN_8086&DEV_10D3&SUBSYS_00008086&REV_00\3&11583659&1&20; PCI\VEN_144D&DEV_A80C&SUBSYS_0000144D&REV_02\3&11583659&1&18
+[*] VM-035 Processor exposes no performance-state implementation                                   [ OBS  ]
+    Kernel-Processor-Power event55 PerformanceImplementation=0
+[*] VM-040 Measured boot includes ACPI DATA configuration events                                   [ OBS  ]
+    EV_PLATFORM_CONFIG_FLAGS ACPI DATA events=4
+
+==== Per-Category Statistics ====
+TLS Callbacks                           : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Debugger Detection                      : Passed   0 | Failed   0 | Observations   0 | Errors   0
+DLL Injection Detection                 : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Generic Sandbox/VM Detection            : Passed   0 | Failed   0 | Observations   0 | Errors   0
+VirtualBox Detection                    : Passed   0 | Failed   0 | Observations   0 | Errors   0
+VMWare Detection                        : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Virtual PC Detection                    : Passed   0 | Failed   0 | Observations   0 | Errors   0
+QEMU Detection                          : Passed  35 | Failed   3 | Observations  25 | Errors   0
+KVM Detection                           : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Xen Detection                           : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Wine Detection                          : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Parallels Detection                     : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Hyper-V Detection                       : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Timing Attacks                          : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Analysis Tools                          : Passed   0 | Failed   0 | Observations   0 | Errors   0
+
+==== Overall Statistics ====
+Total checks passed: 35
+Total checks failed: 3
+Total observations: 25
+Total check errors: 0
+
+
+Analysis done, I hope you didn't get red flags :)
