@@ -37,9 +37,10 @@ uv run --no-project python - <<'CHECK_LATEST'
 import hashlib,json,re
 from pathlib import Path
 root=Path('tests/fixtures/adversary-2026-10-17')
-for f in json.loads((root/'manifest.json').read_text())['files']:
-    data=(root/f['file']).read_bytes()
-    assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256'], f['file']
+for fixture_root in (root, Path('tests/fixtures/nvme-oui-2026-10-18')):
+    for f in json.loads((fixture_root/'manifest.json').read_text())['files']:
+        data=(fixture_root/f['file']).read_bytes()
+        assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256'], f['file']
 coverage=json.loads(Path('tests/adversary-latest-coverage.json').read_text())
 original={(model,r['id']):r for model in ('opus','codex') for r in map(json.loads,(root/(model+'-findings.jsonl')).read_text().splitlines())}
 expected=set(original)

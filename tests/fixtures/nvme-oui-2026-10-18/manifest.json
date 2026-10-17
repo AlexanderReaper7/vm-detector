@@ -1,0 +1,29 @@
+{
+  "captured_at": "2026-10-18T00:22:07.710175+02:00",
+  "method": "QEMU qtest admin DMA responses; 64 MiB null-co backend; generated emulator output, not physical hardware",
+  "qemu": "/nix/store/xn40kvqashlc2j76w361zzci4g9c1vsj-qemu-quiet-11.1.1",
+  "derivation": "/nix/store/9w98rrvabqxlihh4cz76jzwcch3cp384-qemu-quiet-11.1.1.drv",
+  "patch_sha256": "6e221e1d5bf7268eedce58897d50a1efc7d197f7bbf2c1789536d808d1d9eb2a",
+  "files": [
+    {
+      "file": "samsung-controller.bin",
+      "bytes": 4096,
+      "sha256": "7fce9405d9f7d0bb26f47abebf515f6d54d11da619fee6b680348caab19d270e"
+    },
+    {
+      "file": "samsung-namespace.bin",
+      "bytes": 4096,
+      "sha256": "c14c52b35bb5af4377b12dd41431b68f49234a9843f8dc64af1c8843749df6c6"
+    },
+    {
+      "file": "intel-controller.bin",
+      "bytes": 4096,
+      "sha256": "ea191ff539dc758e42f9c2551f8bd826972d31d168afd1af7018005f4e395e9d"
+    },
+    {
+      "file": "intel-namespace.bin",
+      "bytes": 4096,
+      "sha256": "c14c52b35bb5af4377b12dd41431b68f49234a9843f8dc64af1c8843749df6c6"
+    }
+  ]
+}

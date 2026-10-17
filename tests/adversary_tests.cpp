@@ -53,6 +53,12 @@ Bytes latest(const std::string& file)
 	require(bool(f),"open latest fixture "+file);
 	return Bytes(std::istreambuf_iterator<char>(f),{});
 }
+Bytes nvme_qtest_fixture(const std::string& file)
+{
+	std::ifstream f("tests/fixtures/nvme-oui-2026-10-18/"+file,std::ios::binary);
+	require(bool(f),"open NVMe qtest fixture "+file);
+	return Bytes(std::istreambuf_iterator<char>(f),{});
+}
 bool has_id(const std::vector<Result>& rows,const std::string& id)
 {
 	return std::any_of(rows.begin(),rows.end(),[&](const Result& r){return r.id==id;});
@@ -109,6 +115,16 @@ void latest_tests()
 	s.disks=decltype(s.disks)::ok({disk});
 	require(result(evaluate(s),"CODEX-002-CAP").outcome==CHECK_BAD,"captured NVMe zero-total/usable namespace contradiction");
 	require(result(evaluate(s),"CODEX-002-OUI").outcome==CHECK_OBSERVATION,"captured QEMU OUI is only an observation");
+	for (const auto& profile:{"samsung","intel"}) {
+		Snapshot fixed; Disk captured; captured.path=profile;
+		captured.identify=Sample<Bytes>::ok(nvme_qtest_fixture(std::string(profile)+"-controller.bin"));
+		captured.namespace_identify=Sample<Bytes>::ok(nvme_qtest_fixture(std::string(profile)+"-namespace.bin"));
+		fixed.disks=decltype(fixed.disks)::ok({captured});
+		const auto rows=evaluate(fixed);
+		require(result(rows,"CODEX-002-OUI").outcome==CHECK_GOOD,"actual fixed-QEMU IEEE response clears the OUI clue");
+		require(result(rows,"CODEX-002-CAP").outcome==CHECK_BAD,"OUI-only fix preserves the independent capacity contradiction");
+		require(!any(rows,CHECK_ERROR),"both captured NVMe Identify payloads pass validation");
+	}
 	for (unsigned byte=280;byte<296;++byte) {
 		s.disks.value[0]=disk; s.disks.value[0].identify.value[byte]=1;
 		require(result(evaluate(s),"CODEX-002-CAP").outcome==CHECK_GOOD,"each byte of 128-bit TNVMCAP can establish nonzero total");
