@@ -1,0 +1,32 @@
+{
+  "captured_at": "2026-10-18T03:59:27.090952+02:00",
+  "qemu": "/nix/store/7vd0rh8fcb9faypfzr4i9yz1jqd20104-qemu-quiet-11.1.1",
+  "derivation": "/nix/store/c0q2f4ysaqsjl0zhqn71h4f00c9g076s-qemu-quiet-11.1.1.drv",
+  "patch_sha256": "a27642b112d55b14828b3a5aa46f4c1d5fd2cd8d9ccf91231569e1eb2ba0ca74",
+  "methods": {
+    "fixed": "qtest admin DMA responses, disposable 64 MiB raw backend; generated emulator output, not physical hardware",
+    "guest": "Windows NVMe property API inside tell-fix-check after a cold start; existing 256 GiB disk, TPM and UEFI retained"
+  },
+  "files": [
+    {
+      "file": "fixed-controller.bin",
+      "bytes": 4096,
+      "sha256": "dbbed2c1b2fb19605c3681c5ce7b93269aafbe2f294c40e86c284b1a9eac0088"
+    },
+    {
+      "file": "fixed-namespace.bin",
+      "bytes": 4096,
+      "sha256": "4e70edce59c95c4e20c3b236fcc5bc7a1f38efe08418be5ab0255cb7f3c4c424"
+    },
+    {
+      "file": "guest-controller.bin",
+      "bytes": 4096,
+      "sha256": "e2d989f2bb5b5cc8a4303e8c8fe70ff88b2aacc578d9e27145f473ff72d25bfc"
+    },
+    {
+      "file": "guest-namespace.bin",
+      "bytes": 4096,
+      "sha256": "c862fa0cd64a2b5d4156d9c117b34831380ef873b66ab53b1cd2a8738880a07f"
+    }
+  ]
+}

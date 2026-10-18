@@ -37,7 +37,7 @@ uv run --no-project python - <<'CHECK_LATEST'
 import hashlib,json,re
 from pathlib import Path
 root=Path('tests/fixtures/adversary-2026-10-17')
-for fixture_root in (root, Path('tests/fixtures/nvme-oui-2026-10-18')):
+for fixture_root in (root, Path('tests/fixtures/nvme-oui-2026-10-18'), Path('tests/fixtures/nvme-fixed-namespace-2026-10-18')):
     for f in json.loads((fixture_root/'manifest.json').read_text())['files']:
         data=(fixture_root/f['file']).read_bytes()
         assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256'], f['file']

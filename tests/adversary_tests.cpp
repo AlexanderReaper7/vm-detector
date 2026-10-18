@@ -53,9 +53,9 @@ Bytes latest(const std::string& file)
 	require(bool(f),"open latest fixture "+file);
 	return Bytes(std::istreambuf_iterator<char>(f),{});
 }
-Bytes nvme_qtest_fixture(const std::string& file)
+Bytes nvme_qtest_fixture(const std::string& file,const std::string& group="nvme-oui-2026-10-18")
 {
-	std::ifstream f("tests/fixtures/nvme-oui-2026-10-18/"+file,std::ios::binary);
+	std::ifstream f("tests/fixtures/"+group+"/"+file,std::ios::binary);
 	require(bool(f),"open NVMe qtest fixture "+file);
 	return Bytes(std::istreambuf_iterator<char>(f),{});
 }
@@ -124,6 +124,22 @@ void latest_tests()
 		require(result(rows,"CODEX-002-OUI").outcome==CHECK_GOOD,"actual fixed-QEMU IEEE response clears the OUI clue");
 		require(result(rows,"CODEX-002-CAP").outcome==CHECK_BAD,"OUI-only fix preserves the independent capacity contradiction");
 		require(!any(rows,CHECK_ERROR),"both captured NVMe Identify payloads pass validation");
+	}
+	for (const auto& profile:{"fixed","guest"}) {
+		Disk fixed; fixed.path="fixed namespace capture";
+		const std::string group="nvme-fixed-namespace-2026-10-18";
+		fixed.identify=Sample<Bytes>::ok(nvme_qtest_fixture(std::string(profile)+"-controller.bin",group));
+		fixed.namespace_identify=Sample<Bytes>::ok(nvme_qtest_fixture(std::string(profile)+"-namespace.bin",group));
+		Snapshot fixed_snapshot; fixed_snapshot.disks=decltype(fixed_snapshot.disks)::ok({fixed});
+		auto rows=evaluate(fixed_snapshot);
+		require(result(rows,"CODEX-002-OUI").outcome==CHECK_GOOD,"fixed SSD retains the corrected OUI");
+		require(!has_id(rows,"CODEX-002-CAP"),"actual fixed SSD omits the inapplicable capacity check");
+		require(!any(rows,CHECK_ERROR),"actual fixed SSD does not turn inapplicability into ERROR");
+		auto& controller=fixed_snapshot.disks.value[0].identify.value;
+		std::fill(controller.begin()+280,controller.begin()+296,0);
+		require(!has_id(evaluate(fixed_snapshot),"CODEX-002-CAP"),"zero optional capacity cannot produce a row without namespace management");
+		controller[256]|=8;
+		require(result(evaluate(fixed_snapshot),"CODEX-002-CAP").outcome==CHECK_BAD,"restoring the unsupported claim and zero total reproduces BAD");
 	}
 	for (unsigned byte=280;byte<296;++byte) {
 		s.disks.value[0]=disk; s.disks.value[0].identify.value[byte]=1;
