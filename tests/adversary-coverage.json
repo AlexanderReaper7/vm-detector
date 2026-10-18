@@ -187,7 +187,7 @@
   {
     "finding": "VM-038",
     "disposition": "observation",
-    "reason": "Inventory versus present HDAUDIO devices; disabled hardware remains a possible explanation."
+    "reason": "Enabled SMBIOS type-41 sound devices naming ALC1220 versus present HDAUDIO devices. Disabled records and other device types do not claim active audio. Other codecs are outside this targeted check."
   },
   {
     "finding": "VM-039",

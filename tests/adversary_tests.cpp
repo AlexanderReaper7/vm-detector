@@ -227,6 +227,20 @@ int main()
 	replace(s.smbios.value,"pc-q35-11.1","AMD Ryzen");
 	require(result(evaluate(s),"VM-014").outcome==CHECK_GOOD,"changing only processor string removes that detection");
 	s.smbios.value=original;
+	s.devices=decltype(s.devices)::ok({});
+	require(result(evaluate(s),"VM-038").outcome==CHECK_OBSERVATION,"enabled captured ALC1220 without HD Audio remains a clue");
+	const Bytes onboard_header{41,11,0x1d,0x26};
+	auto onboard=std::search(s.smbios.value.begin(),s.smbios.value.end(),onboard_header.begin(),onboard_header.end());
+	require(onboard!=s.smbios.value.end(),"fixture onboard audio structure located");
+	*(onboard+5)=0x07;
+	require(result(evaluate(s),"VM-038").outcome==CHECK_GOOD,"disabled onboard audio does not claim a present audio device");
+	*(onboard+5)=0x85;
+	require(result(evaluate(s),"VM-038").outcome==CHECK_GOOD,"a non-audio structure cannot trigger on its description alone");
+	*(onboard+5)=0x87;
+	s.devices=decltype(s.devices)::ok({"HDAUDIO\\FUNC_01&VEN_10EC&DEV_1220"});
+	require(result(evaluate(s),"VM-038").outcome==CHECK_GOOD,"present HD Audio satisfies the enabled inventory");
+	s.devices={};
+	s.smbios.value=original;
 	for(std::size_t n=0;n<original.size();++n) {
 		s.smbios.value.assign(original.begin(),original.begin()+n);
 		if (n>=8) put32(s.smbios.value,4,std::uint32_t(n-8));

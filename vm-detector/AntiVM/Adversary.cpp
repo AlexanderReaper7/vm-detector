@@ -270,7 +270,7 @@ std::vector<Result> evaluate(const Snapshot& s)
 				} else if (size) { installed+=std::uint64_t(size&0x7fff)*((size&0x8000)?1024:1024*1024); ++populated; }
 			}
 			if (b[0] == 19 && b.size() >= 15 && le32(b,4) == 0 && le32(b,8) == 0x1fffff) lowmem = true;
-			if (b[0] == 41) onboard.push_back(table.string_at(4));
+			if (b[0] == 41 && b.size() >= 11 && b[5] == 0x87) onboard.push_back(table.string_at(4));
 		}
 		if (memory_known && array_present && installed)
 			add(out,"OPUS-010","Single-slot memory array maximum equals installed RAM",
@@ -291,7 +291,7 @@ std::vector<Result> evaluate(const Snapshot& s)
 		if (s.devices.state == ReadState::Ok) {
 			bool audio = false;
 			for (const auto& id : s.devices.value) if (has(id,"HDAUDIO\\")) audio = true;
-			add(out,"VM-038","ALC1220 inventory without present HD Audio",has(join(onboard),"ALC1220") && !audio,
+			add(out,"VM-038","Enabled ALC1220 inventory without present HD Audio",has(join(onboard),"ALC1220") && !audio,
 				CHECK_OBSERVATION,join(onboard)+"; present HDAUDIO="+(audio?"yes":"no"));
 		}
 		if (s.cpu.state == ReadState::Ok && s.cpu.value.vendor == "AuthenticAMD" &&
