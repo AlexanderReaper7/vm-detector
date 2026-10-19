@@ -553,6 +553,29 @@ void kernel_adversary_checks()
 #endif
 }
 
+void network_kernel_checks()
+{
+#if defined(_M_X64) || defined(_M_IX86)
+    using S = adversary::Sample<adversary::Bytes>;
+    HANDLE device = CreateFileW(VMD_DEVICE_PATH, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        nullptr, OPEN_EXISTING, 0, nullptr);
+    if (device == INVALID_HANDLE_VALUE) {
+        report_results(adversary::evaluate_network(S::error(error("open VmDetectorKernel; load its signed companion driver explicitly"))));
+        return;
+    }
+    adversary::Bytes bytes(sizeof(VmdNetworkReply));
+    DWORD returned = 0;
+    BOOL ok = DeviceIoControl(device, VMD_IOCTL_NETWORK, nullptr, 0, bytes.data(),
+        DWORD(bytes.size()), &returned, nullptr);
+    DWORD status = GetLastError();
+    CloseHandle(device);
+    if (!ok) report_results(adversary::evaluate_network(S::error(error("kernel probe IOCTL", status))));
+    else if (returned != bytes.size())
+        report_results(adversary::evaluate_network(S::error("kernel IOCTL returned the wrong byte count")));
+    else report_results(adversary::evaluate_network(S::ok(std::move(bytes))));
+#endif
+}
+
 void qemu_adversary_checks()
 {
 	adversary::Snapshot snapshot;

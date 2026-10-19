@@ -25,3 +25,14 @@ typedef struct VmdKernelReply {
 } VmdKernelReply;
 
 #define VMD_KERNEL_REPLY_SIZE (44u + 16u * VMD_MSR_COUNT + 64u * VMD_FWCFG_FILES)
+
+/* Independent network protocol. Existing MSR/firmware ABI remains version 1. */
+#define VMD_IOCTL_NETWORK 0x83376004u
+#define VMD_NETWORK_VERSION 1u
+#define VMD_NETWORK_REPLY_SIZE 804u
+typedef struct VmdNetworkReply {
+    uint32_t version, size, cs, irql, status, bus, slot;
+    uint8_t pci[2][256];
+    uint32_t eecd[2];
+    uint16_t eeprom[2][64];
+} VmdNetworkReply;

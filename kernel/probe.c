@@ -73,6 +73,8 @@ static void probe(VmdKernelReply *reply)
     }
 }
 
+#include "network.inc"
+
 static NTSTATUS complete(PIRP irp, NTSTATUS status, ULONG_PTR bytes)
 {
     irp->IoStatus.Status = status;
@@ -89,19 +91,24 @@ static NTSTATUS dispatch(PDEVICE_OBJECT device, PIRP irp)
     if (stack->MajorFunction == IRP_MJ_CREATE)
         return complete(irp, stack->FileObject->FileName.Length ? STATUS_OBJECT_NAME_NOT_FOUND : STATUS_SUCCESS, 0);
     if (stack->MajorFunction != IRP_MJ_DEVICE_CONTROL ||
-        stack->Parameters.DeviceIoControl.IoControlCode != VMD_IOCTL_PROBE)
+        (stack->Parameters.DeviceIoControl.IoControlCode != VMD_IOCTL_PROBE &&
+         stack->Parameters.DeviceIoControl.IoControlCode != VMD_IOCTL_NETWORK))
         return complete(irp, STATUS_INVALID_DEVICE_REQUEST, 0);
     if (stack->Parameters.DeviceIoControl.InputBufferLength != 0)
         return complete(irp, STATUS_INVALID_PARAMETER, 0);
-    if (stack->Parameters.DeviceIoControl.OutputBufferLength < sizeof(VmdKernelReply))
+    ULONG size = stack->Parameters.DeviceIoControl.IoControlCode == VMD_IOCTL_NETWORK
+        ? sizeof(VmdNetworkReply) : sizeof(VmdKernelReply);
+    if (stack->Parameters.DeviceIoControl.OutputBufferLength < size)
         return complete(irp, STATUS_BUFFER_TOO_SMALL, 0);
     if (KeGetCurrentIrql() != PASSIVE_LEVEL)
         return complete(irp, STATUS_INVALID_DEVICE_STATE, 0);
     /* Serialize selector/data reads so concurrent clients cannot mix directories. */
     ExAcquireFastMutex((PFAST_MUTEX)device->DeviceExtension);
-    probe((VmdKernelReply *)irp->AssociatedIrp.SystemBuffer);
+    if (stack->Parameters.DeviceIoControl.IoControlCode == VMD_IOCTL_NETWORK)
+        network_probe((VmdNetworkReply *)irp->AssociatedIrp.SystemBuffer);
+    else probe((VmdKernelReply *)irp->AssociatedIrp.SystemBuffer);
     ExReleaseFastMutex((PFAST_MUTEX)device->DeviceExtension);
-    return complete(irp, STATUS_SUCCESS, sizeof(VmdKernelReply));
+    return complete(irp, STATUS_SUCCESS, size);
 }
 
 static void unload(PDRIVER_OBJECT driver)

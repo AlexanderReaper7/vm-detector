@@ -1,0 +1,57 @@
+[
+  {
+    "finding": "NET-VM-01",
+    "category": "vm",
+    "checks": [
+      "NET-VM-01"
+    ],
+    "reason": "Intel hardwired chip capabilities."
+  },
+  {
+    "finding": "NET-VM-02",
+    "category": "vm",
+    "checks": [
+      "NET-VM-02",
+      "NET-C02"
+    ],
+    "reason": "Hardwired capabilities are BAD; legal address encoding is checked independently; mutable NVM/live mismatch is observation only."
+  },
+  {
+    "finding": "NET-CLUE-01",
+    "category": "vm",
+    "checks": [
+      "NET-CLUE-01"
+    ],
+    "reason": "Exact template match is observation only."
+  },
+  {
+    "finding": "NET-LAB-01",
+    "category": "lab",
+    "checks": [],
+    "reason": "Lab/tooling artifacts are excluded from VM scoring."
+  },
+  {
+    "finding": "NET-LAB-02",
+    "category": "lab",
+    "checks": [],
+    "reason": "Lab/tooling artifacts are excluded from VM scoring."
+  },
+  {
+    "finding": "NET-TOOL-01",
+    "category": "tooling",
+    "checks": [],
+    "reason": "Lab/tooling artifacts are excluded from VM scoring."
+  },
+  {
+    "finding": "NET-TOOL-02",
+    "category": "tooling",
+    "checks": [],
+    "reason": "Lab/tooling artifacts are excluded from VM scoring."
+  },
+  {
+    "finding": "NET-TOOL-03",
+    "category": "tooling",
+    "checks": [],
+    "reason": "Lab/tooling artifacts are excluded from VM scoring."
+  }
+]

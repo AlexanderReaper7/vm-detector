@@ -26,6 +26,8 @@ It performs a bunch of common malware tricks with the goal of seeing if you stay
 
 ![Logo](https://i.imgur.com/jEFhsJT.png)
 
+Optional network hardware checks: `vm-detector.exe --check NETKERNEL` requires the loaded companion driver. See [network kernel checks](kernel/README.md#network-kernel-checks) for access requirements, scoring and limitations.
+
 ### Usage
 ```
 $ ./vm-detector.exe -h

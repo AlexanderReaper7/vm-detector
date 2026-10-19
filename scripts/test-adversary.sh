@@ -16,6 +16,10 @@ g++ -std=c++17 -O3 -march=native -mtune=native -flto -Wall -Wextra -Werror \
     -g -fsanitize=address,undefined -fno-omit-frame-pointer \
     tests/kernel_tests.cpp vm-detector/AntiVM/KernelProbe.cpp -o "$build_dir/kernel-tests"
 "$build_dir/kernel-tests"
+g++ -std=c++17 -O3 -march=native -mtune=native -flto -Wall -Wextra -Werror \
+    -g -fsanitize=address,undefined -fno-omit-frame-pointer \
+    tests/network_tests.cpp vm-detector/AntiVM/KernelProbe.cpp -o "$build_dir/network-tests"
+"$build_dir/network-tests"
 uv run --no-project python - <<'PY'
 import hashlib, json, re
 from pathlib import Path
@@ -78,3 +82,22 @@ for r in coverage:
     if r['disposition'] not in ('excluded','not_promoted'): assert r['checks'],r
 print('All 33 latest-pass findings accounted for; every promoted check references production code; fixture hashes verified')
 CHECK_LATEST
+
+uv run --no-project python - <<'NETWORK'
+import hashlib,json
+from pathlib import Path
+root=Path('tests/fixtures/network-2026-10-19')
+for f in json.loads((root/'manifest.json').read_text())['files']:
+    b=(root/f['file']).read_bytes()
+    assert len(b)==f['bytes'] and hashlib.sha256(b).hexdigest()==f['sha256'],f['file']
+coverage=json.loads(Path('tests/network-coverage.json').read_text())
+original={r['id']:r for r in map(json.loads,(root/'findings.jsonl').read_text(encoding='utf-8-sig').splitlines())}
+assert len(coverage)==len(original)==8
+assert {r['finding'] for r in coverage}==set(original)
+source=Path('vm-detector/AntiVM/KernelProbe.cpp').read_text()
+for r in coverage:
+    assert r['category']==original[r['finding']]['category'] and r['reason']
+    assert bool(r['checks'])==(r['category']=='vm')
+    for c in r['checks']: assert '"'+c+'"' in source
+print('All eight network-pass entries accounted for; fixture hashes verified')
+NETWORK

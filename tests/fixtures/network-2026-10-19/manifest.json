@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "file": "before.bin",
+      "bytes": 804,
+      "sha256": "4bafa45dca267ba435a34a153fe2a61f27ebb8eb2b2e03a44b104b962ece06fe"
+    },
+    {
+      "file": "findings.jsonl",
+      "bytes": 19848,
+      "sha256": "1e9671995976d361819cc8c18aef517821475087d2e5fd7bc7756b40c02a2d78"
+    },
+    {
+      "file": "fixed-0000.bin",
+      "bytes": 804,
+      "sha256": "1a21357e1d6922c8afe389d2a45275a78a9b4553b3e894fe4fc2dee504f83975"
+    },
+    {
+      "file": "fixed-1234.bin",
+      "bytes": 804,
+      "sha256": "4ca6c5456725362c0dfe46b35b5c853892005e81a4f8801e04489cc20a0deaca"
+    },
+    {
+      "file": "kernel-run1.txt",
+      "bytes": 5395,
+      "sha256": "fd05edf573284cf530853f269330863a02c67bc98bdacad1f87a1e63061142c5"
+    },
+    {
+      "file": "kernel-run2.txt",
+      "bytes": 5395,
+      "sha256": "aac56c7cb711925aa9c00463cfc8c52059d1e995c5abd200745b24d7aa886bf1"
+    },
+    {
+      "file": "network-report.md",
+      "bytes": 9116,
+      "sha256": "d2ba53c35543d823a0769f102d049dbd6a7861ba3bb682aa3dc34e678abba4e7"
+    },
+    {
+      "file": "report.md",
+      "bytes": 15334,
+      "sha256": "afd62870e2a225def916ff9b52bce562341eb23185f09fd50b039a1938cc6b6c"
+    }
+  ]
+}

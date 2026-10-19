@@ -15,6 +15,7 @@ BOOL ENABLE_VPC_CHECKS = FALSE;
 BOOL ENABLE_QEMU_CHECKS = FALSE;
 BOOL ENABLE_KVM_CHECKS = FALSE;
 BOOL ENABLE_KERNEL_CHECKS = FALSE;
+BOOL ENABLE_NETWORK_KERNEL_CHECKS = FALSE;
 BOOL ENABLE_XEN_CHECKS = FALSE;
 BOOL ENABLE_WINE_CHECKS = FALSE;
 BOOL ENABLE_PARALLELS_CHECKS = FALSE;
@@ -58,6 +59,7 @@ void EnableChecks(std::string checkType) {
 	else if (checkType == "VPC")				ENABLE_VPC_CHECKS = TRUE;
 	else if (checkType == "QEMU")				ENABLE_QEMU_CHECKS = TRUE;
 	else if (checkType == "KERNEL") ENABLE_KERNEL_CHECKS = TRUE;
+	else if (checkType == "NETKERNEL") ENABLE_NETWORK_KERNEL_CHECKS = TRUE;
 	else if (checkType == "KVM")				ENABLE_KVM_CHECKS = TRUE;
 	else if (checkType == "XEN")				ENABLE_XEN_CHECKS = TRUE;
 	else if (checkType == "WINE")				ENABLE_WINE_CHECKS = TRUE;
@@ -85,6 +87,7 @@ void print_help(const char* prog_name){
 		"                        QEMU             (QEMU detection)\n"
 		"                        KVM              (KVM detection)\n"
 		"                        KERNEL           (Opt-in fixed kernel probes; requires loaded driver)\n"
+		"                        NETKERNEL        (Opt-in 82574L PCI/NVM kernel probe)\n"
 		"                        XEN              (Xen detection)\n"
 		"                        WINE             (Wine detection)\n"
 		"                        PARALLELS        (Parallels detection)\n"
@@ -103,7 +106,7 @@ void print_help(const char* prog_name){
 		"  %s --check VMWARE --check QEMU\n"
 		"  %s --sleep 30\n"
 		"\n"
-		"If no --check options are given, all user-mode checks are executed by default. KERNEL is opt-in.\n"
+		"If no --check options are given, all user-mode checks are executed by default. KERNEL and NETKERNEL are opt-in.\n"
 		"If no other options are given, the default delay is 600 seconds.\n",
 		prog_name, prog_name, prog_name, prog_name
 	);
@@ -156,7 +159,7 @@ int main(int argc, char* argv[]){
 	stats_init();
 
 	/* Display general informations */
-	_tprintf(_T("[vm-detector version 0.83]"));
+	_tprintf(_T("[vm-detector version 0.84]"));
 
 	print_category(TEXT("Initialisation"));
 	g_current_category = CAT_NONE;
@@ -364,6 +367,12 @@ int main(int argc, char* argv[]){
 		exec_check(&qemu_firmware_ACPI, TEXT("Checking ACPI tables  "));
 		qemu_adversary_checks();
 
+	}
+
+	if (ENABLE_NETWORK_KERNEL_CHECKS) {
+		print_category(TEXT("Network Kernel Detection"));
+		g_current_category = CAT_KERNEL;
+		network_kernel_checks();
 	}
 
 	if (ENABLE_KERNEL_CHECKS) {
