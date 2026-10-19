@@ -41,6 +41,7 @@ Options:
                         VPC              (Virtual PC detection)
                         QEMU             (QEMU detection)
                         KVM              (KVM detection)
+                        KERNEL           (Opt-in fixed kernel probes; requires loaded driver)
                         XEN              (Xen detection)
                         WINE             (Wine detection)
                         PARALLELS        (Parallels detection)
@@ -60,7 +61,7 @@ Examples:
   vm-detector.exe --sleep 30
 ```
 
-The QEMU category includes the [adversarial findings checks](docs/adversary-checks.md), their scoring policy, per-finding coverage and verification limits. New probes report observations and errors separately; inapplicable checks produce no output.
+The QEMU category includes the [adversarial findings checks](docs/adversary-checks.md), their scoring policy, per-finding coverage and verification limits. New probes report observations and errors separately; inapplicable checks produce no output. The optional [KERNEL category](kernel/README.md) adds live MSR and firmware-directory probes through a separately loaded, signed companion driver. The default selection includes user-mode checks only.
 
 ## Download
 

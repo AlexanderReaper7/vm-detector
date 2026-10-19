@@ -1,0 +1,28 @@
+{
+  "files": [
+    {
+      "file": "before.txt",
+      "bytes": 4331,
+      "sha256": "ee2ece90da0e112a436d142bcb73c49f0027deba8e0b7a805c49e5672f4f53ba",
+      "source": "/home/alexander/Backups/stealth-vm/20261019-kernel-review/files/gpt-6.1-sol-kernel-20261019-1233/raw/kernel-probe.txt"
+    },
+    {
+      "file": "fixed.txt",
+      "bytes": 4267,
+      "sha256": "d6a917e20ee3f0a7e813f9a7873e6fb28ab6b0aa60849bb88d2e655cf0b761ff",
+      "source": "/home/alexander/Backups/stealth-vm/20261019-kernel-deployment/files/kernel-fix-deployment-20261019/kernel-probe.txt"
+    },
+    {
+      "file": "findings.jsonl",
+      "bytes": 17236,
+      "sha256": "3702bd6462772201e81daeb0a1d16a448098fc5bb81b9fa5cb6dbbe4198290a7",
+      "source": "/home/alexander/Backups/stealth-vm/20261019-kernel-review/files/gpt-6.1-sol-kernel-20261019-1233/findings.jsonl"
+    },
+    {
+      "file": "live-response.bin",
+      "bytes": 4268,
+      "sha256": "9898458228beef74053a90fbbd19a97224f342fd6efc777c61985079b92d5d36",
+      "source": "/home/alexander/Backups/vm-detector/20261019-kernel/initial/vm-detector-kernel-20261019/live-response.bin"
+    }
+  ]
+}

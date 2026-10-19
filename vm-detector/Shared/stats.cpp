@@ -19,6 +19,7 @@ const char* category_names[CAT_COUNT] = {
 	"Hyper-V Detection",
 	"Timing Attacks",
 	"Analysis Tools",
+	"Kernel VM Detection",
 };
 
 Category g_current_category = CAT_NONE;

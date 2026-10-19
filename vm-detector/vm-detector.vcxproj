@@ -220,6 +220,7 @@
     <ClInclude Include="AntiVM\Generic.h" />
     <ClInclude Include="AntiVM\HyperV.h" />
     <ClInclude Include="AntiVM\Adversary.h" />
+    <ClInclude Include="AntiVM\KernelProbe.h" />
     <ClInclude Include="AntiVM\AdversaryWindows.h" />
     <ClInclude Include="Shared\CheckOutcome.h" />
     <ClInclude Include="AntiVM\KVM.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="AntiVM\Generic.cpp" />
     <ClCompile Include="AntiVM\HyperV.cpp" />
     <ClCompile Include="AntiVM\Adversary.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
+    <ClCompile Include="AntiVM\KernelProbe.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
     <ClCompile Include="AntiVM\AdversaryWindows.cpp" />
     <ClCompile Include="AntiVM\KVM.cpp" />
     <ClCompile Include="AntiVM\Parallels.cpp" />

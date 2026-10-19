@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Adversary.h"
 #include "AdversaryWindows.h"
+#include "KernelProbe.h"
 #include <devpkey.h>
 #include <hidsdi.h>
 
@@ -525,6 +526,33 @@ Sample<std::vector<std::string>> gateways()
 }
 }
 
+namespace {
+void report_results(const std::vector<adversary::Result>& results);
+}
+
+void kernel_adversary_checks()
+{
+#if defined(_M_X64) || defined(_M_IX86)
+    using S = adversary::Sample<adversary::Bytes>;
+    HANDLE device = CreateFileW(VMD_DEVICE_PATH, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        nullptr, OPEN_EXISTING, 0, nullptr);
+    if (device == INVALID_HANDLE_VALUE) {
+        report_results(adversary::evaluate_kernel(S::error(error("open VmDetectorKernel; load its signed companion driver explicitly"))));
+        return;
+    }
+    adversary::Bytes bytes(sizeof(VmdKernelReply));
+    DWORD returned = 0;
+    BOOL ok = DeviceIoControl(device, VMD_IOCTL_PROBE, nullptr, 0, bytes.data(),
+        DWORD(bytes.size()), &returned, nullptr);
+    DWORD status = GetLastError();
+    CloseHandle(device);
+    if (!ok) report_results(adversary::evaluate_kernel(S::error(error("kernel probe IOCTL", status))));
+    else if (returned != bytes.size())
+        report_results(adversary::evaluate_kernel(S::error("kernel IOCTL returned the wrong byte count")));
+    else report_results(adversary::evaluate_kernel(S::ok(std::move(bytes))));
+#endif
+}
+
 void qemu_adversary_checks()
 {
 	adversary::Snapshot snapshot;
@@ -544,7 +572,13 @@ void qemu_adversary_checks()
 	snapshot.storage_history=storage_history();
 	snapshot.processor_power=processor_power();
 	snapshot.gateways=gateways();
-	for (const auto& result:adversary::evaluate(snapshot)) {
+	report_results(adversary::evaluate(snapshot));
+}
+
+namespace {
+void report_results(const std::vector<adversary::Result>& results)
+{
+	for (const auto& result:results) {
 		auto title=wide(result.id+" "+result.title);
 		_print_check_text(title.c_str());
 		_print_check_result(result.outcome,title.c_str());
@@ -556,4 +590,5 @@ void qemu_adversary_checks()
 			LOG_PRINT(_T("%s"),evidence.c_str());
 		}
 	}
+}
 }

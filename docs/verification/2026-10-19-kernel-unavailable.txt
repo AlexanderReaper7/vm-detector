@@ -1,0 +1,38 @@
+[vm-detector version 0.83]
+-------------------------[Initialisation]-------------------------
+
+[*] You are running: Microsoft Windows 10  (build 26300) 64-bit
+[*] All APIs present and accounted for.
+
+-------------------------[Kernel VM Detection]-------------------------
+[*] VM-K01 KVM private MSRs (kernel)                                                               [ ERROR ]
+    open VmDetectorKernel; load its signed companion driver explicitly error=2
+[*] VM-K02 KVM/OVMF firmware-directory identifiers (kernel)                                        [ ERROR ]
+    open VmDetectorKernel; load its signed companion driver explicitly error=2
+
+==== Per-Category Statistics ====
+TLS Callbacks                           : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Debugger Detection                      : Passed   0 | Failed   0 | Observations   0 | Errors   0
+DLL Injection Detection                 : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Generic Sandbox/VM Detection            : Passed   0 | Failed   0 | Observations   0 | Errors   0
+VirtualBox Detection                    : Passed   0 | Failed   0 | Observations   0 | Errors   0
+VMWare Detection                        : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Virtual PC Detection                    : Passed   0 | Failed   0 | Observations   0 | Errors   0
+QEMU Detection                          : Passed   0 | Failed   0 | Observations   0 | Errors   0
+KVM Detection                           : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Xen Detection                           : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Wine Detection                          : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Parallels Detection                     : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Hyper-V Detection                       : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Timing Attacks                          : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Analysis Tools                          : Passed   0 | Failed   0 | Observations   0 | Errors   0
+Kernel VM Detection                     : Passed   0 | Failed   0 | Observations   0 | Errors   2
+
+==== Overall Statistics ====
+Total checks passed: 0
+Total checks failed: 0
+Total observations: 0
+Total check errors: 2
+
+
+Analysis done, I hope you didn't get red flags :)

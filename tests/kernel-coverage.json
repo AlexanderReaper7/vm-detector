@@ -1,0 +1,52 @@
+[
+  {
+    "finding": "VM-K01",
+    "category": "vm",
+    "checks": [
+      "VM-K01"
+    ],
+    "disposition": "strict",
+    "reason": "Fixed private-register reads with faulting invalid-register controls."
+  },
+  {
+    "finding": "VM-K02",
+    "category": "vm",
+    "checks": [
+      "VM-K02"
+    ],
+    "disposition": "strict",
+    "reason": "Exact KVM ROM name or OVMF firmware-setting namespace in a validated complete directory."
+  },
+  {
+    "finding": "VM-K03",
+    "category": "vm",
+    "checks": [
+      "VM-002"
+    ],
+    "disposition": "strict",
+    "reason": "Already scored from present PCI PnP identity; no duplicate kernel row."
+  },
+  {
+    "finding": "VM-C01",
+    "category": "vm",
+    "checks": [
+      "VM-C01"
+    ],
+    "disposition": "observation",
+    "reason": "Compatible AMIF signatures remain a clue; no failed-check score."
+  },
+  {
+    "finding": "TOOL-01",
+    "category": "tooling",
+    "checks": [],
+    "disposition": "excluded",
+    "reason": "Lab/tooling artifacts are excluded from VM scoring."
+  },
+  {
+    "finding": "LAB-01",
+    "category": "lab",
+    "checks": [],
+    "disposition": "excluded",
+    "reason": "Lab/tooling artifacts are excluded from VM scoring."
+  }
+]

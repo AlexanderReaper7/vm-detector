@@ -27,6 +27,7 @@ typedef enum {
 	CAT_HYPERV,
 	CAT_TIMING_ATTACKS,
 	CAT_ANALYSIS_TOOLS,
+	CAT_KERNEL,
 	CAT_COUNT // always last: number of counted categories
 } Category;
 

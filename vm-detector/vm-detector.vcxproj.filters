@@ -295,6 +295,9 @@
     <ClInclude Include="AntiVM\Adversary.h">
       <Filter>AntiVM\Header</Filter>
     </ClInclude>
+    <ClInclude Include="AntiVM\KernelProbe.h">
+      <Filter>AntiVM\Header</Filter>
+    </ClInclude>
     <ClInclude Include="AntiVM\AdversaryWindows.h">
       <Filter>AntiVM\Header</Filter>
     </ClInclude>
@@ -499,6 +502,9 @@
       <Filter>AntiDebug\Source</Filter>
     </ClCompile>
     <ClCompile Include="AntiVM\Adversary.cpp">
+      <Filter>AntiVM\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="AntiVM\KernelProbe.cpp">
       <Filter>AntiVM\Source</Filter>
     </ClCompile>
     <ClCompile Include="AntiVM\AdversaryWindows.cpp">
