@@ -33,9 +33,9 @@ int main() {
     auto v=rows(before);
     require(outcome(v,"NET-VM-01")==CHECK_BAD && outcome(v,"NET-VM-02")==CHECK_BAD,"original kernel measurements detected");
     require(outcome(v,"NET-CLUE-01")==CHECK_OBSERVATION && outcome(v,"NET-C02")==CHECK_OBSERVATION,"template and autoload mismatch are observations");
-    for (const char* name : {"fixed-0000.bin","fixed-1234.bin"}) {
+    for (const char* name : {"fixed-0000.bin","fixed-1234.bin","live-20261020.bin"}) {
         const auto r=load(name); v=rows(r);
-        require(v.size()==2 && outcome(v,"NET-VM-01")==CHECK_GOOD && outcome(v,"NET-VM-02")==CHECK_GOOD,"actual fixed QEMU query passes without clues");
+        require(v.size()==2 && outcome(v,"NET-VM-01")==CHECK_GOOD && outcome(v,"NET-VM-02")==CHECK_GOOD,"fixed device measurements pass without clues");
     }
     // Each immutable contradiction must be sufficient independently.
     auto r=fixed; r.pci[0][0xe2]|=0x90; mirror(r);

@@ -39,6 +39,11 @@
       "file": "report.md",
       "bytes": 15334,
       "sha256": "afd62870e2a225def916ff9b52bce562341eb23185f09fd50b039a1938cc6b6c"
+    },
+    {
+      "file": "live-20261020.bin",
+      "bytes": 804,
+      "sha256": "f2b2871d66ae2ce47d403e23049056b5ca0d88ed56b63d402783a6dfb9121b60"
     }
   ]
 }
